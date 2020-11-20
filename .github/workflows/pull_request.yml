@@ -1,0 +1,34 @@
+name: 'Release build'
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - 'main'
+
+jobs:
+  macos-build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Show XCode version
+        run: xcodebuild -version
+
+      - name: List device simulators
+        run: xcrun xctrace list devices
+
+      - name: Install Make
+        run: brew install make
+
+      - name: Install deps
+        run: make deps
+
+      - name: Run unit tests
+        run: make test
+
+      - name: Make Release build
+        run: make release
