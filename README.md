@@ -114,6 +114,36 @@ extension SpeechlyManager: SpeechClientDelegate {
 
 Check out the [ios-repo-filtering](https://github.com/speechly/ios-repo-filtering) repository for a demo app built using this client.
 
+## Contributing
+
+If you want to fix a bug or add new functionality, feel free to open an issue and start the discussion. Generally it's much better to have a discussion first, before submitting a PR, since it eliminates potential design problems further on.
+
+### Requirements
+
+- Swift 5.3+
+- Xcode 12+
+- Make
+- swift-doc
+
+Make sure you have Xcode and command-line tools installed. The rest of tools can be installed using e.g. Homebrew:
+
+```sh
+brew install swift make swiftdocorg/formulae/swift-doc
+```
+
+### Building the project
+
+You can use various Make targets for building the project. Feel free to check out [the Makefile](./Makefile), but most commonly used tasks are:
+
+```sh
+# Install dependencies, run tests, build release version and generate docs.
+# Won't do anything if everything worked fine and nothing was changed in source code / package manifest.
+make all
+
+# Cleans the build directory, will cause `make all` to run stuff again.
+make clean
+```
+
 ## About Speechly
 
 Speechly is a developer tool for building real-time multimodal voice user interfaces. It enables developers and designers to enhance their current touch user interface with voice functionalities for better user experience. Speechly key features:
