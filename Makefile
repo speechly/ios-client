@@ -2,6 +2,7 @@
 SWIFT      := swift
 XCODE      := xcodebuild
 BUILDPATH  := ./.build
+DOCSPATH   := ./docs
 
 # Deps vars
 PACKAGE := Package.swift
@@ -28,7 +29,7 @@ RELEASEBUILD := $(ARCHPATH)/.release
 # Common
 
 .PHONY:
-all: deps test release
+all: deps test release docs
 
 .PHONY:
 deps: $(DEPS)
@@ -46,6 +47,10 @@ release: $(RELEASEBUILD)
 clean:
 	$(SWIFT) package clean
 	@rm -rf $(BUILDPATH)
+	@rm -rf $(DOCSPATH)
+
+$(DOCSPATH): $(SOURCES)
+	$(SWIFT) doc generate ./Sources/ --module-name Speechly --output $(DOCSPATH) --base-url ""
 
 # Tests
 
