@@ -6,7 +6,7 @@ import NIO
 /// A client for Speechly Identity gRPC API which provides token caching functionality.
 ///
 /// The cache is implemented as read-through and transparent for the consumer.
-class CachingIdentityClient {
+public class CachingIdentityClient {
     /// The protocol constraints for backing base Identity client.
     public typealias PromisableClient = IdentityClientProtocol & Promisable
 
