@@ -114,6 +114,12 @@ extension SpeechlyManager: SpeechClientDelegate {
 
 Check out the [ios-repo-filtering](https://github.com/speechly/ios-repo-filtering) repository for a demo app built using this client.
 
+## Documentation
+
+Check out [official Speechly documentation](https://docs.speechly.com/client-libraries/ios/) for tutorials and guides on how to use this client.
+
+You can also find the [API documentation in the repo](docs/Home.md).
+
 ## Contributing
 
 If you want to fix a bug or add new functionality, feel free to open an issue and start the discussion. Generally it's much better to have a discussion first, before submitting a PR, since it eliminates potential design problems further on.
