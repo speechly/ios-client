@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		48AA45A925C9E4310021B9DA /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48AA45A825C9E42C0021B9DA /* RecordButton.swift */; };
 		F5183C062550529B0044C990 /* UserDefaultsCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = F541DA77255051CA00ABAB98 /* UserDefaultsCache.swift */; };
 		F53C0A772548055700200CE8 /* CacheProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53C0A762548055700200CE8 /* CacheProtocol.swift */; };
 		F54DE9AC254FF2B4006B08EF /* IdentityClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54DE9AB254FF2B4006B08EF /* IdentityClient.swift */; };
@@ -47,7 +48,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		48D0A23925C9E30C002711E1 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		48AA45A825C9E42C0021B9DA /* RecordButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordButton.swift; sourceTree = "<group>"; };
 		F51380CB2566BB6300EDF449 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		F51380CC2566BB7400EDF449 /* Package.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; path = Package.resolved; sourceTree = "<group>"; };
 		F51380D22566F70600EDF449 /* pull_request.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = pull_request.yml; sourceTree = "<group>"; };
@@ -1001,7 +1002,7 @@
 		48D0A23825C9E2E1002711E1 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				48D0A23925C9E30C002711E1 /* Images.xcassets */,
+				48AA45A825C9E42C0021B9DA /* RecordButton.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -3245,6 +3246,7 @@
 				F5183C062550529B0044C990 /* UserDefaultsCache.swift in Sources */,
 				OBJ_2227 /* AudioRecorder.swift in Sources */,
 				F53C0A772548055700200CE8 /* CacheProtocol.swift in Sources */,
+				48AA45A925C9E4310021B9DA /* RecordButton.swift in Sources */,
 				F58C769E2563BFD4009ECF3C /* SpeechEntity.swift in Sources */,
 				F5A55BFA256550C2002DEA4C /* GRPCAddress.swift in Sources */,
 				F5D5210725557067009C5F5C /* SpeechContext.swift in Sources */,
