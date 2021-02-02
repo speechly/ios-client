@@ -152,7 +152,7 @@ public class AudioRecorder {
         }
 
         let audioSession = AVAudioSession.sharedInstance()
-        try audioSession.setCategory(.record, mode: .voiceChat)
+        try audioSession.setCategory(.playAndRecord, mode: .voiceChat)
         let enableFront = true
 
         if enableFront, audioSession.availableInputs?.count == 1,
