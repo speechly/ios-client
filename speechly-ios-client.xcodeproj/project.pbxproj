@@ -47,6 +47,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		48D0A23925C9E30C002711E1 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		F51380CB2566BB6300EDF449 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		F51380CC2566BB7400EDF449 /* Package.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; path = Package.resolved; sourceTree = "<group>"; };
 		F51380D22566F70600EDF449 /* pull_request.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = pull_request.yml; sourceTree = "<group>"; };
@@ -997,6 +998,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		48D0A23825C9E2E1002711E1 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				48D0A23925C9E30C002711E1 /* Images.xcassets */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
 		F51380D02566F70600EDF449 /* .github */ = {
 			isa = PBXGroup;
 			children = (
@@ -2693,6 +2702,7 @@
 				F53C0A6E25472B6F00200CE8 /* Audio */,
 				F53C0A6D25472B6400200CE8 /* SLU */,
 				F53C0A6C25472B4A00200CE8 /* Identity */,
+				48D0A23825C9E2E1002711E1 /* UI */,
 			);
 			name = Speechly;
 			path = Sources/Speechly;
