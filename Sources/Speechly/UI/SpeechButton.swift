@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 import SnapKit
 
-public class RecordButton: UIView {
+public class SpeechButton: UIView {
     
     let client: SpeechClient
     
@@ -12,6 +12,7 @@ public class RecordButton: UIView {
         super.init(frame: .zero)
         
         addSubview(contentView)
+        addSubview(speechBubbleView)
         
         contentView.addSubview(blurEffectView)
         contentView.addSubview(borderView)
@@ -33,6 +34,11 @@ public class RecordButton: UIView {
             make.center.equalToSuperview()
         }
         
+        speechBubbleView.snp.makeConstraints { (make) in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(contentView.snp.top)
+        }
+        
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTap(_:)))
         addGestureRecognizer(tap)
         
@@ -47,6 +53,9 @@ public class RecordButton: UIView {
         
         func initializeState() {
             isPressed = false
+            
+            holdToTalkText = "Hold to talk"
+            speechBubbleView.alpha = 0
         }
         
         initializeState()
@@ -55,6 +64,12 @@ public class RecordButton: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    var holdToTalkText: String! {
+        didSet {
+            speechBubbleView.text = holdToTalkText.uppercased()
+        }
     }
     
     private var isPressed: Bool = false {
@@ -69,6 +84,8 @@ public class RecordButton: UIView {
                     client.stop()
                 }
             }
+            
+            speechBubbleView.hide()
         }
     }
     
@@ -80,13 +97,19 @@ public class RecordButton: UIView {
     
     private let blurEffectView = UIImageView(image: UIImage(named: "mic-button-fx"))
     
+    private let speechBubbleView = SpeechBubbleView()
+    
     private func initializeRotationAnimation() {
         blurEffectView.startRotating()
         borderView.startRotating()
     }
     
     @objc private func didTap(_ sender: UITapGestureRecognizer) {
-        
+        if speechBubbleView.isShowing {
+            speechBubbleView.hide()
+        } else {
+            speechBubbleView.show()
+        }
     }
     
     @objc private func didPress(_ sender: UILongPressGestureRecognizer) {
