@@ -4,7 +4,11 @@ import SnapKit
 
 public class RecordButton: UIView {
     
-    public init() {
+    let client: SpeechClient
+    
+    public init(client: SpeechClient) {
+        self.client = client
+        
         super.init(frame: .zero)
         
         addSubview(contentView)
@@ -54,6 +58,14 @@ public class RecordButton: UIView {
         didSet {
             contentView.transform = isPressed ? CGAffineTransform(scaleX: 1.2, y: 1.2) : .identity
             blurEffectView.alpha = isPressed ? 1 : 0
+            
+            if isPressed != oldValue {
+                if isPressed {
+                    client.start()
+                } else {
+                    client.stop()
+                }
+            }
         }
     }
     
