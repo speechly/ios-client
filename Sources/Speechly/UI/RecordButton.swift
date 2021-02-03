@@ -40,14 +40,17 @@ public class RecordButton: UIView {
         press.minimumPressDuration = 0.1
         addGestureRecognizer(press)
         
-        blurEffectView.startRotating()
-        borderView.startRotating()
+        let center = NotificationCenter.default
+        center.addObserver(forName: UIApplication.didBecomeActiveNotification, object: nil, queue: nil) { [weak self] _ in
+            self?.initializeRotationAnimation()
+        }
         
         func initializeState() {
             isPressed = false
         }
         
         initializeState()
+        initializeRotationAnimation()
     }
     
     required init?(coder: NSCoder) {
@@ -76,6 +79,11 @@ public class RecordButton: UIView {
     private let borderView = UIImageView(image: UIImage(named: "mic-button-frame"))
     
     private let blurEffectView = UIImageView(image: UIImage(named: "mic-button-fx"))
+    
+    private func initializeRotationAnimation() {
+        blurEffectView.startRotating()
+        borderView.startRotating()
+    }
     
     @objc private func didTap(_ sender: UITapGestureRecognizer) {
         
