@@ -51,11 +51,12 @@ public class SpeechButton: UIView {
             self?.initializeRotationAnimation()
         }
         
+        speechBubbleView.hide(animated: false)
+        
         func initializeState() {
             isPressed = false
             
             holdToTalkText = "Hold to talk"
-            speechBubbleView.alpha = 0
         }
         
         initializeState()
@@ -85,7 +86,9 @@ public class SpeechButton: UIView {
                 }
             }
             
-            speechBubbleView.hide()
+            if speechBubbleView.isShowing {
+                speechBubbleView.hide()
+            }
         }
     }
     
@@ -106,7 +109,7 @@ public class SpeechButton: UIView {
     
     @objc private func didTap(_ sender: UITapGestureRecognizer) {
         if speechBubbleView.isShowing {
-            speechBubbleView.hide()
+            speechBubbleView.pulse()
         } else {
             speechBubbleView.show()
         }

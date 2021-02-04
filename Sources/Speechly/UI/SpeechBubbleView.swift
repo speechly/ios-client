@@ -54,18 +54,40 @@ class SpeechBubbleView: UIView {
         return alpha > 0
     }
     
-    func show() {
-        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
+    func show(animated: Bool = true) {
+        let updates = {
             self.alpha = 1
             self.transform = .identity
-        }, completion: nil)
+        }
+        
+        if animated {
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: updates, completion: nil)
+        } else {
+            updates()
+        }
     }
     
-    func hide() {
-        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
+    func hide(animated: Bool = true) {
+        let updates = {
             self.alpha = 0
             self.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
-        }, completion: nil)
+        }
+        
+        if animated {
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: updates, completion: nil)
+        } else {
+            updates()
+        }
+    }
+    
+    func pulse(duration: TimeInterval = 0.5, scale: CGFloat = 1.2) {
+        UIView.animate(withDuration: duration / 2, delay: 0, options: .curveEaseInOut, animations: {
+            self.transform = CGAffineTransform(scaleX: scale, y: scale)
+        }, completion: {  _ in
+            UIView.animate(withDuration: duration / 2, delay: 0, options: .curveEaseInOut, animations: {
+                self.transform = .identity
+            }, completion: nil)
+        })
     }
     
     var text: String? {
