@@ -38,7 +38,7 @@ class SpeechBubbleView: UIView {
         }
         
         func initializeStyle() {
-            font = UIFont.boldSystemFont(ofSize: 17)
+            font = UIFont(name: "AvenirNextCondensed-Bold", size: 17)
             color = UIColor.darkGray
             textColor = UIColor.white
         }

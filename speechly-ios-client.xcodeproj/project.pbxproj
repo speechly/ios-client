@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		48AA45A925C9E4310021B9DA /* SpeechButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48AA45A825C9E42C0021B9DA /* SpeechButton.swift */; };
 		48F053E825CB596D00F362E9 /* SpeechBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48F053E725CB596D00F362E9 /* SpeechBubbleView.swift */; };
+		48F0556A25CDEF6600F362E9 /* SpeechTranscriptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48F0556925CDEF6600F362E9 /* SpeechTranscriptView.swift */; };
 		F5183C062550529B0044C990 /* UserDefaultsCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = F541DA77255051CA00ABAB98 /* UserDefaultsCache.swift */; };
 		F53C0A772548055700200CE8 /* CacheProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53C0A762548055700200CE8 /* CacheProtocol.swift */; };
 		F54DE9AC254FF2B4006B08EF /* IdentityClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54DE9AB254FF2B4006B08EF /* IdentityClient.swift */; };
@@ -51,6 +52,7 @@
 /* Begin PBXFileReference section */
 		48AA45A825C9E42C0021B9DA /* SpeechButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechButton.swift; sourceTree = "<group>"; };
 		48F053E725CB596D00F362E9 /* SpeechBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechBubbleView.swift; sourceTree = "<group>"; };
+		48F0556925CDEF6600F362E9 /* SpeechTranscriptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechTranscriptView.swift; sourceTree = "<group>"; };
 		F51380CB2566BB6300EDF449 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		F51380CC2566BB7400EDF449 /* Package.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; path = Package.resolved; sourceTree = "<group>"; };
 		F51380D22566F70600EDF449 /* pull_request.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = pull_request.yml; sourceTree = "<group>"; };
@@ -1006,6 +1008,7 @@
 			children = (
 				48AA45A825C9E42C0021B9DA /* SpeechButton.swift */,
 				48F053E725CB596D00F362E9 /* SpeechBubbleView.swift */,
+				48F0556925CDEF6600F362E9 /* SpeechTranscriptView.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -3253,6 +3256,7 @@
 				F58C769E2563BFD4009ECF3C /* SpeechEntity.swift in Sources */,
 				F5A55BFA256550C2002DEA4C /* GRPCAddress.swift in Sources */,
 				F5D5210725557067009C5F5C /* SpeechContext.swift in Sources */,
+				48F0556A25CDEF6600F362E9 /* SpeechTranscriptView.swift in Sources */,
 				F5734B9A254FF09800484BAB /* IdentityClientProtocol.swift in Sources */,
 				F57B764E254C4196000C705F /* SluClientProtocol.swift in Sources */,
 				48F053E825CB596D00F362E9 /* SpeechBubbleView.swift in Sources */,
