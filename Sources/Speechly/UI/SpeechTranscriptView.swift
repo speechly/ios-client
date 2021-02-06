@@ -56,18 +56,7 @@ public class SpeechTranscriptView: UIView {
             return
         }
         
-        let attributedText = NSMutableAttributedString()
-        
-        for (index, transcript) in segment.transcripts.enumerated() {
-            var text = transcript.value
-            if index > 0 {
-                text = " " + text
-            }
-            
-            let entity = segment.entities.first(where: {
-                transcript.index >= $0.startIndex && transcript.index < $0.endIndex
-            })
-            
+        let attributedText = segment.attributedText(attributedBy: { (transcript, entity) in
             let color: UIColor
             if segment.isFinal {
                 color = (entity != nil) ? highlightedTextColor : textColor
@@ -75,13 +64,11 @@ public class SpeechTranscriptView: UIView {
                 color = textColor
             }
             
-            let attributedTranscript = NSAttributedString(string: text, attributes: [
+            return [
                 .font: font,
                 .foregroundColor: color
-            ])
-            
-            attributedText.append(attributedTranscript)
-        }
+            ]
+        })
         
         textLabel.attributedText = attributedText
         
@@ -108,5 +95,33 @@ public class SpeechTranscriptView: UIView {
         didSet {
             reloadText()
         }
+    }
+}
+
+extension SpeechSegment {
+    
+    typealias AttributeProvider = (_ transcript: SpeechTranscript, _ entity: SpeechEntity?) -> [NSAttributedString.Key: Any]
+    
+    func attributedText(attributedBy attributeProvider: AttributeProvider) -> NSAttributedString {
+        let attributedText = NSMutableAttributedString()
+        
+        for (index, transcript) in transcripts.enumerated() {
+            var text = transcript.value
+            if index > 0 {
+                text = " " + text
+            }
+            
+            let entity = entities.first(where: {
+                transcript.index >= $0.startIndex && transcript.index < $0.endIndex
+            })
+            
+            let attributes = attributeProvider(transcript, entity)
+            
+            let attributedTranscript = NSAttributedString(string: text, attributes: attributes)
+            
+            attributedText.append(attributedTranscript)
+        }
+        
+        return attributedText
     }
 }
