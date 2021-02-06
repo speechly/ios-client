@@ -1,13 +1,14 @@
 import Foundation
+import AVFoundation
 import UIKit
 import SnapKit
 
 public class SpeechButton: UIView {
     
-    let client: SpeechClient
+    private let clientProvider: () -> SpeechClient?
     
-    public init(client: SpeechClient) {
-        self.client = client
+    public init(clientProvider: @escaping () -> SpeechClient?) {
+        self.clientProvider = clientProvider
         
         super.init(frame: .zero)
         
@@ -49,6 +50,7 @@ public class SpeechButton: UIView {
         let center = NotificationCenter.default
         center.addObserver(forName: UIApplication.didBecomeActiveNotification, object: nil, queue: nil) { [weak self] _ in
             self?.initializeRotationAnimation()
+            self?.reloadAuthorizationStatus()
         }
         
         speechBubbleView.hide(animated: false)
@@ -78,7 +80,10 @@ public class SpeechButton: UIView {
             contentView.transform = isPressed ? CGAffineTransform(scaleX: 1.2, y: 1.2) : .identity
             blurEffectView.alpha = isPressed ? 1 : 0
             
-            if isPressed != oldValue {
+            if audioAuthorizationStatus == .authorized,
+               let client = clientProvider(),
+               isPressed != oldValue {
+                
                 if isPressed {
                     client.start()
                 } else {
@@ -94,7 +99,7 @@ public class SpeechButton: UIView {
     
     private let contentView = UIView()
     
-    private let iconView = UIImageView(image: UIImage(named: "mic"))
+    private let iconView = UIImageView()
     
     private let borderView = UIImageView(image: UIImage(named: "mic-button-frame"))
     
@@ -108,10 +113,23 @@ public class SpeechButton: UIView {
     }
     
     @objc private func didTap(_ sender: UITapGestureRecognizer) {
-        if speechBubbleView.isShowing {
-            speechBubbleView.pulse()
-        } else {
-            speechBubbleView.show()
+        switch audioAuthorizationStatus {
+        case .authorized:
+            if speechBubbleView.isShowing {
+                speechBubbleView.pulse()
+            } else {
+                speechBubbleView.show()
+            }
+            
+        case .notDetermined:
+            _ = clientProvider()
+            
+        case .denied, .restricted:
+            let settingsURL = URL(string: UIApplication.openSettingsURLString)!
+            UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+            
+        @unknown default:
+            break
         }
     }
     
@@ -134,6 +152,23 @@ public class SpeechButton: UIView {
             UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
                 self.isPressed = isPressed
             }, completion: nil)
+        }
+    }
+    
+    private var audioAuthorizationStatus: AVAuthorizationStatus {
+        return AVCaptureDevice.authorizationStatus(for: .audio)
+    }
+    
+    private func reloadAuthorizationStatus() {
+        switch audioAuthorizationStatus {
+        case .authorized:
+            iconView.image = UIImage(named: "mic")
+        case .notDetermined:
+            iconView.image = UIImage(named: "power-on")
+        case .denied, .restricted:
+            iconView.image = UIImage(named: "mic-no-permission")
+        @unknown default:
+            break
         }
     }
 }
