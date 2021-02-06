@@ -91,7 +91,7 @@ public class SpeechTranscriptView: UIView {
         }
     }
     
-    public var highlightedTextColor: UIColor = UIColor.cyan {
+    public var highlightedTextColor: UIColor = UIColor(red: 30 / 255.0, green: 211 / 255.0, blue: 242 / 255.0, alpha: 1) {
         didSet {
             reloadText()
         }
