@@ -16,14 +16,6 @@ public class SpeechTranscriptView: UIView {
         
         backgroundColor = UIColor.black
         
-        textLabel.numberOfLines = 0
-        
-        addSubview(textLabel)
-        
-        textLabel.snp.makeConstraints { (make) in
-            make.edges.equalToSuperview().inset(12)
-        }
-        
         alpha = 0
     }
     
@@ -39,43 +31,46 @@ public class SpeechTranscriptView: UIView {
         reloadText(animated: animated)
     }
     
-    private let textLabel = UILabel()
+    private var labels: [SpeechTranscriptLabel] = []
     
     private func reloadText(animated: Bool = false) {
-        guard let segment = segment else {
-            if animated {
+        if let segment = segment {
+            for (index, transcript) in segment.transcripts.enumerated() {
+                var label: SpeechTranscriptLabel! = (index < labels.count) ? labels[index] : nil
+                if label == nil {
+                    label = SpeechTranscriptLabel(parent: self)
+                    addSubview(label)
+                    label.snp.makeConstraints { (make) in
+                        make.edges.equalToSuperview().inset(12)
+                    }
+                    labels.append(label)
+                    label.alpha = 0
+                }
+                
+                label.configure(segment: segment, transcript: transcript)
+                
                 UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
-                    self.alpha = 0
-                }, completion: { _ in
-                    self.textLabel.attributedText = nil
-                })
-            } else {
-                alpha = 0
-                textLabel.attributedText = nil
+                    label.alpha = 1
+                }, completion: nil)
             }
-            return
         }
         
-        let attributedText = segment.attributedText(attributedBy: { (transcript, entity) in
-            let color: UIColor
-            if segment.isFinal {
-                color = (entity != nil) ? highlightedTextColor : textColor
-            } else {
-                color = textColor
+        for (index, label) in labels.enumerated() {
+            if index >= (segment?.transcripts ?? []).count {
+                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
+                    label.alpha = 0
+                }, completion: { _ in
+                    label.text = " "
+                })
             }
-            
-            return [
-                .font: font,
-                .foregroundColor: color
-            ]
-        })
+        }
         
-        textLabel.attributedText = attributedText
-        
-        if animated, alpha == 0 {
+        if animated {
             UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
-                self.alpha = 1
+                self.alpha = (self.segment != nil) ? 1 : 0
             }, completion: nil)
+        } else {
+            alpha = (segment != nil) ? 1 : 0
         }
     }
     
@@ -95,6 +90,48 @@ public class SpeechTranscriptView: UIView {
         didSet {
             reloadText()
         }
+    }
+}
+
+class SpeechTranscriptLabel: UILabel {
+    
+    private(set) var transcript: SpeechTranscript?
+    
+    private unowned let parent: SpeechTranscriptView
+    
+    init(parent: SpeechTranscriptView) {
+        self.parent = parent
+        
+        super.init(frame: .zero)
+        
+        text = " "
+        numberOfLines = 0
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configure(segment: SpeechSegment, transcript: SpeechTranscript) {
+        self.transcript = transcript
+        
+        attributedText = segment.attributedText(attributedBy: { (transcript, entity) in
+            let color: UIColor
+            if transcript == self.transcript {
+                if segment.isFinal {
+                    color = (entity != nil) ? parent.highlightedTextColor : parent.textColor
+                } else {
+                    color = parent.textColor
+                }
+            } else {
+                color = UIColor.clear
+            }
+            
+            return [
+                .font: parent.font,
+                .foregroundColor: color
+            ]
+        })
     }
 }
 
