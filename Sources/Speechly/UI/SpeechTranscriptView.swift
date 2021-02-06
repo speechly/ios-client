@@ -118,6 +118,9 @@ class SpeechTranscriptLabel: UILabel {
     func configure(segment: SpeechSegment, transcript: SpeechTranscript, entity: SpeechEntity?) {
         self.transcript = transcript
         
+        let shouldHighlightEntity = entity != nil && self.entity == nil && segment.isFinal
+        self.entity = segment.isFinal ? entity : nil
+        
         attributedText = segment.attributedText(attributedBy: { (transcript, entity) in
             let color: UIColor
             if transcript == self.transcript {
@@ -135,6 +138,16 @@ class SpeechTranscriptLabel: UILabel {
                 .foregroundColor: color
             ]
         })
+        
+        if shouldHighlightEntity {
+            UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseInOut, animations: {
+                self.transform = CGAffineTransform(translationX: 0, y: -self.bounds.height / 8)
+            }, completion: { _ in
+                UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseInOut, animations: {
+                    self.transform = .identity
+                }, completion: nil)
+            })
+        }
     }
 }
 
