@@ -47,7 +47,9 @@ public class SpeechTranscriptView: UIView {
                     label.alpha = 0
                 }
                 
-                label.configure(segment: segment, transcript: transcript)
+                let entity = segment.entity(for: transcript)
+                
+                label.configure(segment: segment, transcript: transcript, entity: entity)
                 
                 UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
                     label.alpha = 1
@@ -96,6 +98,7 @@ public class SpeechTranscriptView: UIView {
 class SpeechTranscriptLabel: UILabel {
     
     private(set) var transcript: SpeechTranscript?
+    private(set) var entity: SpeechEntity?
     
     private unowned let parent: SpeechTranscriptView
     
@@ -112,7 +115,7 @@ class SpeechTranscriptLabel: UILabel {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(segment: SpeechSegment, transcript: SpeechTranscript) {
+    func configure(segment: SpeechSegment, transcript: SpeechTranscript, entity: SpeechEntity?) {
         self.transcript = transcript
         
         attributedText = segment.attributedText(attributedBy: { (transcript, entity) in
@@ -139,6 +142,12 @@ extension SpeechSegment {
     
     typealias AttributeProvider = (_ transcript: SpeechTranscript, _ entity: SpeechEntity?) -> [NSAttributedString.Key: Any]
     
+    func entity(for transcript: SpeechTranscript) -> SpeechEntity? {
+        return entities.first(where: {
+            transcript.index >= $0.startIndex && transcript.index < $0.endIndex
+        })
+    }
+    
     func attributedText(attributedBy attributeProvider: AttributeProvider) -> NSAttributedString {
         let attributedText = NSMutableAttributedString()
         
@@ -148,9 +157,7 @@ extension SpeechSegment {
                 text = " " + text
             }
             
-            let entity = entities.first(where: {
-                transcript.index >= $0.startIndex && transcript.index < $0.endIndex
-            })
+            let entity = self.entity(for: transcript)
             
             let attributes = attributeProvider(transcript, entity)
             
