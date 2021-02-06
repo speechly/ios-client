@@ -68,9 +68,16 @@ public class SpeechTranscriptView: UIView {
                 transcript.index >= $0.startIndex && transcript.index < $0.endIndex
             })
             
+            let color: UIColor
+            if segment.isFinal {
+                color = (entity != nil) ? highlightedTextColor : textColor
+            } else {
+                color = textColor
+            }
+            
             let attributedTranscript = NSAttributedString(string: text, attributes: [
                 .font: font,
-                .foregroundColor: (entity != nil) ? highlightedTextColor : textColor
+                .foregroundColor: color
             ])
             
             attributedText.append(attributedTranscript)
