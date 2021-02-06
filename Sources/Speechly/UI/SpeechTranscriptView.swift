@@ -141,7 +141,7 @@ class SpeechTranscriptLabel: UILabel {
         
         if shouldHighlightEntity {
             UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseInOut, animations: {
-                self.transform = CGAffineTransform(translationX: 0, y: -self.bounds.height / 8)
+                self.transform = CGAffineTransform(translationX: 0, y: -self.font.lineHeight / 4)
             }, completion: { _ in
                 UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseInOut, animations: {
                     self.transform = .identity
