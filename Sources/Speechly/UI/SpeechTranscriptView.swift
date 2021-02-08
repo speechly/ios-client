@@ -51,19 +51,28 @@ public class SpeechTranscriptView: UIView {
                 
                 label.configure(segment: segment, transcript: transcript, entity: entity)
                 
-                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
+                if animated {
+                    UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
+                        label.alpha = 1
+                    }, completion: nil)
+                } else {
                     label.alpha = 1
-                }, completion: nil)
+                }
             }
         }
         
         for (index, label) in labels.enumerated() {
             if index >= (segment?.transcripts ?? []).count {
-                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
-                    label.alpha = 0
-                }, completion: { _ in
+                if animated {
+                    UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
+                        label.alpha = 0
+                    }, completion: { _ in
+                        label.text = " "
+                    })
+                } else {
                     label.text = " "
-                })
+                    label.alpha = 0
+                }
             }
         }
         
