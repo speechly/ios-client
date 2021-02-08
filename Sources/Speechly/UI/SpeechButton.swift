@@ -5,9 +5,12 @@ import SnapKit
 
 public class SpeechButton: UIView {
     
+    private let diameter: CGFloat
+    
     private let clientProvider: () -> SpeechClient?
     
-    public init(clientProvider: @escaping () -> SpeechClient?) {
+    public init(diameter: CGFloat = 80, clientProvider: @escaping () -> SpeechClient?) {
+        self.diameter = diameter
         self.clientProvider = clientProvider
         
         super.init(frame: .zero)
@@ -19,8 +22,12 @@ public class SpeechButton: UIView {
         contentView.addSubview(borderView)
         contentView.addSubview(iconView)
         
+        snp.makeConstraints { (make) in
+            make.width.height.equalTo(diameter)
+        }
+        
         contentView.snp.makeConstraints { (make) in
-            make.edges.equalToSuperview()
+            make.center.equalToSuperview()
         }
         
         blurEffectView.snp.makeConstraints { (make) in
@@ -37,7 +44,7 @@ public class SpeechButton: UIView {
         
         speechBubbleView.snp.makeConstraints { (make) in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(contentView.snp.top)
+            make.bottom.equalTo(snp.top).offset(-4)
         }
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTap(_:)))
@@ -69,15 +76,23 @@ public class SpeechButton: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    var holdToTalkText: String! {
+    public var holdToTalkText: String! {
         didSet {
             speechBubbleView.text = holdToTalkText.uppercased()
         }
     }
     
-    private var isPressed: Bool = false {
+    public var pressedScale: CGFloat = 1.3
+    
+    private var normalScale: CGFloat {
+        return diameter / borderView.intrinsicContentSize.width
+    }
+    
+    public private(set) var isPressed: Bool = false {
         didSet {
-            contentView.transform = isPressed ? CGAffineTransform(scaleX: 1.2, y: 1.2) : .identity
+            var scale = normalScale * (isPressed ? pressedScale : 1)
+            
+            contentView.transform = CGAffineTransform(scaleX: scale, y: scale)
             blurEffectView.alpha = isPressed ? 1 : 0
             
             if audioAuthorizationStatus == .authorized,
@@ -149,7 +164,7 @@ public class SpeechButton: UIView {
         }
         
         if isPressed != self.isPressed {
-            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
+            UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseInOut, animations: {
                 self.isPressed = isPressed
             }, completion: nil)
         }
