@@ -9,9 +9,9 @@ import Foundation
 import UIKit
 import SnapKit
 
-class SpeechBubbleView: UIView {
+public class SpeechBubbleView: UIView {
     
-    init() {
+    public init() {
         super.init(frame: .zero)
         
         pointerView.transform = CGAffineTransform(rotationAngle: CGFloat.pi / 4)
@@ -50,11 +50,11 @@ class SpeechBubbleView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    var isShowing: Bool {
+    public var isShowing: Bool {
         return alpha > 0
     }
     
-    func show(animated: Bool = true) {
+    public func show(animated: Bool = true) {
         let updates = {
             self.alpha = 1
             self.transform = .identity
@@ -67,7 +67,7 @@ class SpeechBubbleView: UIView {
         }
     }
     
-    func hide(animated: Bool = true) {
+    public func hide(animated: Bool = true) {
         let updates = {
             self.alpha = 0
             self.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
@@ -88,9 +88,11 @@ class SpeechBubbleView: UIView {
                 self.transform = .identity
             }, completion: nil)
         })
+        
+        restartAutohideTimer()
     }
     
-    var text: String? {
+    public var text: String? {
         get {
             return textLabel.text
         }
@@ -99,7 +101,7 @@ class SpeechBubbleView: UIView {
         }
     }
     
-    var font: UIFont! {
+    public var font: UIFont! {
         get {
             return textLabel.font
         }
@@ -108,7 +110,7 @@ class SpeechBubbleView: UIView {
         }
     }
     
-    var textColor: UIColor! {
+    public var textColor: UIColor! {
         get {
             return textLabel.textColor
         }
@@ -117,7 +119,7 @@ class SpeechBubbleView: UIView {
         }
     }
     
-    var color: UIColor! {
+    public var color: UIColor! {
         didSet {
             contentView.backgroundColor = color
             pointerView.backgroundColor = color
