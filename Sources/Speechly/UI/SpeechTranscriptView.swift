@@ -25,13 +25,45 @@ public class SpeechTranscriptView: UIView {
     
     public private(set) var segment: SpeechSegment?
     
-    public func configure(segment: SpeechSegment, animated: Bool) {
+    public func configure(segment: SpeechSegment?, animated: Bool) {
         self.segment = segment
         
         reloadText(animated: animated)
     }
     
+    public func hide(animated: Bool) {
+        configure(segment: nil, animated: animated)
+    }
+    
+    public var font: UIFont = UIFont(name: "AvenirNextCondensed-Bold", size: 20)! {
+        didSet {
+            reloadText()
+        }
+    }
+    
+    public var textColor: UIColor = UIColor.white {
+        didSet {
+            reloadText()
+        }
+    }
+    
+    public var highlightedTextColor: UIColor = UIColor(red: 30 / 255.0, green: 211 / 255.0, blue: 242 / 255.0, alpha: 1) {
+        didSet {
+            reloadText()
+        }
+    }
+    
+    public var autohideInterval: TimeInterval? = 3 {
+        didSet {
+            if autohideInterval != oldValue {
+                restartAutohideTimer()
+            }
+        }
+    }
+    
     private var labels: [SpeechTranscriptLabel] = []
+    
+    private var autohideTimer: Timer?
     
     private func reloadText(animated: Bool = false) {
         if let segment = segment {
@@ -83,23 +115,19 @@ public class SpeechTranscriptView: UIView {
         } else {
             alpha = (segment != nil) ? 1 : 0
         }
+        
+        restartAutohideTimer()
     }
     
-    public var font: UIFont = UIFont(name: "AvenirNextCondensed-Bold", size: 20)! {
-        didSet {
-            reloadText()
+    private func restartAutohideTimer() {
+        autohideTimer?.invalidate()
+        
+        guard let autohideInterval = autohideInterval else {
+            return
         }
-    }
-    
-    public var textColor: UIColor = UIColor.white {
-        didSet {
-            reloadText()
-        }
-    }
-    
-    public var highlightedTextColor: UIColor = UIColor(red: 30 / 255.0, green: 211 / 255.0, blue: 242 / 255.0, alpha: 1) {
-        didSet {
-            reloadText()
+        
+        autohideTimer = Timer.scheduledTimer(withTimeInterval: autohideInterval, repeats: false) { [weak self] _ in
+            self?.hide(animated: true)
         }
     }
 }
