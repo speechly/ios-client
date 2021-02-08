@@ -61,9 +61,12 @@ public class SpeechBubbleView: UIView {
         }
         
         if animated {
-            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: updates, completion: nil)
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: updates, completion: { _ in
+                self.restartAutohideTimer()
+            })
         } else {
             updates()
+            restartAutohideTimer()
         }
     }
     
@@ -80,7 +83,15 @@ public class SpeechBubbleView: UIView {
         }
     }
     
-    func pulse(duration: TimeInterval = 0.5, scale: CGFloat = 1.2) {
+    public var autohideInterval: TimeInterval? = 3 {
+        didSet {
+            if autohideInterval != oldValue {
+                restartAutohideTimer()
+            }
+        }
+    }
+    
+    public func pulse(duration: TimeInterval = 0.5, scale: CGFloat = 1.2) {
         UIView.animate(withDuration: duration / 2, delay: 0, options: .curveEaseInOut, animations: {
             self.transform = CGAffineTransform(scaleX: scale, y: scale)
         }, completion: {  _ in
@@ -131,4 +142,21 @@ public class SpeechBubbleView: UIView {
     private let contentView = UIView()
     
     private let pointerView = UIView()
+    
+    private var autohideTimer: Timer?
+    
+    private func restartAutohideTimer() {
+        autohideTimer?.invalidate()
+        
+        guard let autohideInterval = autohideInterval else {
+            return
+        }
+        
+        autohideTimer = Timer.scheduledTimer(withTimeInterval: autohideInterval, repeats: false) { [weak self] _ in
+            guard let self = self, self.isShowing else {
+                return
+            }
+            self.hide()
+        }
+    }
 }
