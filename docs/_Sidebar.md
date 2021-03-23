@@ -3,6 +3,7 @@
 
   - [ApiAccessToken](ApiAccessToken)
   - [ApiAccessToken.AuthScope](ApiAccessToken.AuthScope)
+  - [ApiAccessToken.TokenType](ApiAccessToken.TokenType)
   - [AudioRecorder](AudioRecorder)
   - [AudioRecorder.AudioRecorderError](AudioRecorder.AudioRecorderError)
   - [CachingIdentityClient](CachingIdentityClient)
@@ -12,7 +13,6 @@
   - [IdentityClient.IdentityClientError](IdentityClient.IdentityClientError)
   - [SluClient](SluClient)
   - [SluConfig](SluConfig)
-  - [SluConfig.LanguageCode](SluConfig.LanguageCode)
   - [SpeechClient](SpeechClient)
   - [SpeechClientError](SpeechClientError)
   - [SpeechContext](SpeechContext)

@@ -44,3 +44,9 @@ public init(baseClient: PromisableClient, cache: CacheProtocol)
 ``` swift
 public func authenticate(appId: UUID, deviceId: UUID) -> EventLoopFuture<ApiAccessToken>
 ```
+
+### `authenticateProject(projectId:deviceId:)`
+
+``` swift
+public func authenticateProject(projectId: UUID, deviceId: UUID) -> EventLoopFuture<ApiAccessToken>
+```

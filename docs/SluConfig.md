@@ -24,13 +24,3 @@ The number of channels in the audio sent to the stream.
 ``` swift
 let channels: UInt32
 ```
-
-### `languageCode`
-
-The language of the audio sent to the stream.
-Must be the same as the language used for configuring Speechly application,
-which is passed in the token to `start`.
-
-``` swift
-let languageCode: LanguageCode
-```

@@ -28,12 +28,12 @@ public init?(tokenString: String)
 
   - tokenString: raw token value obtained from Identity API or cache.
 
-### `init(appId:deviceId:expiresAt:scopes:tokenString:)`
+### `init(appId:projectId:deviceId:expiresAt:scopes:tokenString:)`
 
 Creates a new token.
 
 ``` swift
-public init(appId: UUID, deviceId: UUID, expiresAt: Date, scopes: Set<AuthScope>, tokenString: String)
+public init(appId: UUID?, projectId: UUID?, deviceId: UUID, expiresAt: Date, scopes: Set<AuthScope>, tokenString: String)
 ```
 
 > 
@@ -54,7 +54,15 @@ public init(appId: UUID, deviceId: UUID, expiresAt: Date, scopes: Set<AuthScope>
 Speechly application identifier.
 
 ``` swift
-let appId: UUID
+let appId: UUID?
+```
+
+### `projectId`
+
+Speechly project identifier
+
+``` swift
+let projectId: UUID?
 ```
 
 ### `deviceId`
@@ -91,12 +99,12 @@ let tokenString: String
 
 ## Methods
 
-### `validate(appId:deviceId:expiresIn:)`
+### `validate(key:deviceId:expiresIn:)`
 
 Validates the token against provided identifiers and expiration time.
 
 ``` swift
-public func validate(appId: UUID, deviceId: UUID, expiresIn: TimeInterval) -> Bool
+public func validate(key: UUID, deviceId: UUID, expiresIn: TimeInterval) -> Bool
 ```
 
 #### Parameters
@@ -108,6 +116,14 @@ public func validate(appId: UUID, deviceId: UUID, expiresIn: TimeInterval) -> Bo
 #### Returns
 
 `true` if the token is valid, `false` otherwise.
+
+### `key()`
+
+Get the token key (appId or projectId) for caching or hashing.
+
+``` swift
+public func key() -> UUID
+```
 
 ### `validateExpiry(expiresIn:)`
 
