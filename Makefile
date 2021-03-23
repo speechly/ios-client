@@ -1,6 +1,6 @@
 # Common vars
 SWIFT      := swift
-XCODE      := xcodebuild
+XCODE      := xcodebuild -disableAutomaticPackageResolution
 BUILDPATH  := ./.build
 DOCSPATH   := ./docs
 

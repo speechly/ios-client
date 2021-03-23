@@ -13,7 +13,8 @@ import NIO
 ///
 /// The client is ready to use once initialised.
 public class SpeechClient {
-    private let appId: UUID
+    private let appId: UUID?
+    private let projectId: UUID?
     private let appConfig: SluConfig
     private let cache: CacheProtocol
     private let identityClient: IdentityClientProtocol
@@ -90,9 +91,6 @@ public class SpeechClient {
 
     private var contexts: SpeechContexts = SpeechContexts()
 
-    /// An enum listing supported Speechly application languages.
-    public typealias LanguageCode = SluConfig.LanguageCode
-
     /// Creates a new `SpeechClient`.
     ///
     /// - Parameters:
@@ -106,8 +104,8 @@ public class SpeechClient {
     ///     - eventLoopGroup: SwiftNIO event loop group to use.
     ///     - delegateDispatchQueue: `DispatchQueue` to use for dispatching calls to the delegate.
     public convenience init(
-        appId: UUID,
-        language: LanguageCode,
+        appId: UUID?,
+        projectId: UUID?,
         prepareOnInit: Bool = true,
         identityAddr: String = "grpc+tls://api.speechly.com",
         sluAddr: String = "grpc+tls://api.speechly.com",
@@ -122,7 +120,7 @@ public class SpeechClient {
 
         try self.init(
             appId: appId,
-            language: language,
+            projectId: projectId,
             prepareOnInit: prepareOnInit,
             sluClient: sluClient,
             identityClient: identityClient,
@@ -145,8 +143,8 @@ public class SpeechClient {
     ///     - audioRecorder: An implementaion of an audio recorder.
     ///     - delegateDispatchQueue: `DispatchQueue` to use for dispatching calls to the delegate.
     public init(
-        appId: UUID,
-        language: LanguageCode,
+        appId: UUID?,
+        projectId: UUID?,
         prepareOnInit: Bool,
         sluClient: SluClientProtocol,
         identityClient: IdentityClientProtocol,
@@ -155,6 +153,7 @@ public class SpeechClient {
         delegateDispatchQueue: DispatchQueue
     ) throws {
         self.appId = appId
+        self.projectId = projectId
         self.sluClient = sluClient
         self.identityClient = identityClient
         self.cache = cache
@@ -163,8 +162,7 @@ public class SpeechClient {
 
         self.appConfig = SluConfig(
             sampleRate: audioRecorder.sampleRate,
-            channels: audioRecorder.channels,
-            languageCode: language
+            channels: audioRecorder.channels
         )
 
         self.sluClient.delegate = self
@@ -183,7 +181,10 @@ public class SpeechClient {
     }
 
     private func authenticate() -> EventLoopFuture<ApiAccessToken> {
-        return self.identityClient.authenticate(appId: self.appId, deviceId: self.deviceId)
+        if let projectId = self.projectId {
+            return self.identityClient.authenticateProject(projectId: projectId, deviceId: self.deviceId)
+        }
+        return self.identityClient.authenticate(appId: self.appId!, deviceId: self.deviceId)
     }
 }
 

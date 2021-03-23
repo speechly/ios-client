@@ -212,7 +212,6 @@ extension SluClient: SluClientProtocol {
                     $0.encoding = .linear16
                     $0.sampleRateHertz = Int32(config.sampleRate)
                     $0.channels = Int32(config.channels)
-                    $0.languageCode = config.languageCode.rawValue
                 }
             })
             .flatMap {

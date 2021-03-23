@@ -16,8 +16,19 @@ public struct ApiAccessToken: Hashable {
         case WLU
     }
 
+    /// Type of token, determines the possible Speechly Apps that are accessible.
+    public enum TokenType {
+        /// Token can be used to access a single application.
+        case Application
+        /// Token can be used with all applications in the project.
+        case Project
+    }
+
     /// Speechly application identifier.
-    public let appId: UUID
+    public let appId: UUID?
+
+    /// Speechly project identifier
+    public let projectId: UUID?
 
     /// Speechly device identifier.
     public let deviceId: UUID
@@ -41,16 +52,18 @@ public struct ApiAccessToken: Hashable {
             return nil
         }
 
-        guard let appId = UUID(uuidString: decoded.appId) else {
+        let appId = decoded.appId.flatMap{UUID(uuidString: $0)}
+        let projectId = decoded.projectId.flatMap{UUID(uuidString: $0)}
+        if appId == nil && projectId == nil {
             return nil
         }
-
         guard let deviceId = UUID(uuidString: decoded.deviceId) else {
             return nil
         }
 
         self.init(
             appId: appId,
+            projectId: projectId,
             deviceId: deviceId,
             expiresAt: Date(timeIntervalSince1970: TimeInterval(decoded.exp)),
             scopes: parseScope(decoded.scope),
@@ -68,8 +81,9 @@ public struct ApiAccessToken: Hashable {
     ///     - expiresAt: Token expiration timestamp.
     ///     - scopes: Authorised token scopes.
     ///     - tokenString - Raw token value which is passed to the services.
-    public init(appId: UUID, deviceId: UUID, expiresAt: Date, scopes: Set<AuthScope>, tokenString: String) {
+    public init(appId: UUID?, projectId: UUID?, deviceId: UUID, expiresAt: Date, scopes: Set<AuthScope>, tokenString: String) {
         self.appId = appId
+        self.projectId = projectId
         self.deviceId = deviceId
         self.expiresAt = expiresAt
         self.scopes = scopes
@@ -83,8 +97,16 @@ public struct ApiAccessToken: Hashable {
     ///     - deviceId: Speechly device identifier to match against.
     ///     - expiresIn: Time interval within which the token should still be valid.
     /// - Returns: `true` if the token is valid, `false` otherwise.
-    public func validate(appId: UUID, deviceId: UUID, expiresIn: TimeInterval) -> Bool {
-        return self.appId == appId && self.deviceId == deviceId && self.validateExpiry(expiresIn: expiresIn)
+    public func validate(key: UUID, deviceId: UUID, expiresIn: TimeInterval) -> Bool {
+        return (self.appId == key || self.projectId == key) && self.deviceId == deviceId && self.validateExpiry(expiresIn: expiresIn)
+    }
+
+    /// Get the token key (appId or projectId) for caching or hashing.
+    public func key() -> UUID {
+        if let appId = self.appId {
+            return appId
+        }
+        return self.projectId!
     }
 
     /// Validates token expiration time.
@@ -100,7 +122,8 @@ public struct ApiAccessToken: Hashable {
 // MARK: - Internal token parsing logic
 
 private struct DecodedToken: Decodable {
-    let appId: String
+    let appId: String?
+    let projectId: String?
     let deviceId: String
     let scope: String
     let exp: Int
