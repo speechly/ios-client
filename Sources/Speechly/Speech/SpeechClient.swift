@@ -94,8 +94,8 @@ public class SpeechClient {
     /// Creates a new `SpeechClient`.
     ///
     /// - Parameters:
-    ///     - appId: Speechly application identifier.
-    ///     - language: Speechly application language.
+    ///     - appId: Speechly application identifier. Eiither appId or projectId is needed.
+    ///     - projectId: Speechly projectt identifier. Eiither appId or projectId is needed.
     ///     - prepareOnInit: Whether the client should prepare on initialisation.
     ///                      Preparing means initialising the audio stack
     ///                      and fetching the authentication token for the API.
@@ -104,8 +104,8 @@ public class SpeechClient {
     ///     - eventLoopGroup: SwiftNIO event loop group to use.
     ///     - delegateDispatchQueue: `DispatchQueue` to use for dispatching calls to the delegate.
     public convenience init(
-        appId: UUID?,
-        projectId: UUID?,
+        appId: UUID? = nil,
+        projectId: UUID? = nil,
         prepareOnInit: Bool = true,
         identityAddr: String = "grpc+tls://api.speechly.com",
         sluAddr: String = "grpc+tls://api.speechly.com",
@@ -132,8 +132,8 @@ public class SpeechClient {
     /// Creates a new `SpeechClient`.
     ///
     /// - Parameters:
-    ///     - appId: Speechly application identifier.
-    ///     - language: Speechly application language.
+    ///     - appId: Speechly application identifier. Eiither appId or projectId is needed.
+    ///     - projectId: Speechly projectt identifier. Eiither appId or projectId is needed.
     ///     - prepareOnInit: Whether the client should prepare on initialisation.
     ///                      Preparing means initialising the audio stack
     ///                      and fetching the authentication token for the API.
@@ -143,8 +143,8 @@ public class SpeechClient {
     ///     - audioRecorder: An implementaion of an audio recorder.
     ///     - delegateDispatchQueue: `DispatchQueue` to use for dispatching calls to the delegate.
     public init(
-        appId: UUID?,
-        projectId: UUID?,
+        appId: UUID? = nil,
+        projectId: UUID? = nil,
         prepareOnInit: Bool,
         sluClient: SluClientProtocol,
         identityClient: IdentityClientProtocol,
