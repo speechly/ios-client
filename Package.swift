@@ -14,8 +14,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.0.0"),
-        .package(url: "https://github.com/grpc/grpc-swift.git", from: "1.0.0-alpha.20"),
-        .package(name: "speechly-api", url: "https://github.com/speechly/api.git", from: "0.0.4"),
+        .package(url: "https://github.com/grpc/grpc-swift.git", from: "1.0.0"),
+        .package(name: "speechly-api", url: "https://github.com/speechly/api.git", from: "0.1.3"),
     ],
     targets: [
         .target(
