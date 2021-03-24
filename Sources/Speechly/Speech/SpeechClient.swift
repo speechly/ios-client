@@ -91,6 +91,12 @@ public class SpeechClient {
 
     private var contexts: SpeechContexts = SpeechContexts()
 
+    /// Represents different error situations when initializing the SpeechlyClient.
+    public enum SpeechlyClientInitError: Error {
+        /// no appId or projectId given.
+        case keysMissing
+    }
+    
     /// Creates a new `SpeechClient`.
     ///
     /// - Parameters:
@@ -112,6 +118,9 @@ public class SpeechClient {
         eventLoopGroup: EventLoopGroup = PlatformSupport.makeEventLoopGroup(loopCount: 1),
         delegateDispatchQueue: DispatchQueue = DispatchQueue(label: "com.speechly.iosclient.SpeechClient.delegateQueue")
     ) throws {
+        if appId == nil && projectId == nil {
+            throw SpeechlyClientInitError.keysMissing
+        }
         let sluClient = try SluClient(addr: sluAddr, loopGroup: eventLoopGroup)
         let baseIdentityClient = try IdentityClient(addr: identityAddr, loopGroup: eventLoopGroup)
         let cache = UserDefaultsCache()
