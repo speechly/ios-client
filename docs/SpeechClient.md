@@ -148,10 +148,10 @@ public func sluClientDidReceiveIntent(_ sluClient: SluClientProtocol, contextId:
 public func sluClientDidReceiveSegmentEnd(_ sluClient: SluClientProtocol, contextId: String, segmentId: Int)
 ```
 
-### `start()`
+### `start(appId:)`
 
 ``` swift
-public func start()
+public func start(appId: String? = nil)
 ```
 
 ### `stop()`

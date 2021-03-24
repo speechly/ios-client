@@ -31,6 +31,8 @@
     If misconfigured, the recognition stream will not produce any useful results.
   - [SpeechClient](SpeechClient):
     A client that implements `SpeechClientProtocol` on top of Speechly SLU API and an audio recorder.
+  - [SpeechClient.SpeechlyClientInitError](SpeechClient_SpeechlyClientInitError):
+    Represents different error situations when initializing the SpeechlyClient.
   - [SpeechClientError](SpeechClientError):
     Errors caught by `SpeechClientProtocol` and dispatched to `SpeechClientDelegate`.
   - [SpeechContext](SpeechContext):

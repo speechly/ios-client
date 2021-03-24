@@ -14,6 +14,7 @@
   - [SluClient](SluClient)
   - [SluConfig](SluConfig)
   - [SpeechClient](SpeechClient)
+  - [SpeechClient.SpeechlyClientInitError](SpeechClient.SpeechlyClientInitError)
   - [SpeechClientError](SpeechClientError)
   - [SpeechContext](SpeechContext)
   - [SpeechEntity](SpeechEntity)

@@ -61,10 +61,10 @@ var delegate: SluClientDelegate?
 
 ## Methods
 
-### `start(token:config:)`
+### `start(token:config:appId:)`
 
 ``` swift
-public func start(token: ApiAccessToken, config: SluConfig) -> EventLoopFuture<Void>
+public func start(token: ApiAccessToken, config: SluConfig, appId: String? = nil) -> EventLoopFuture<Void>
 ```
 
 ### `stop()`
