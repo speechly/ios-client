@@ -97,7 +97,7 @@ extension SluClient: SluClientProtocol {
     private typealias SluRequestProto = Speechly_Slu_V1_SLURequest
     private typealias SluResponseProto = Speechly_Slu_V1_SLUResponse
 
-    public func start(token: ApiAccessToken, config: SluConfig) -> EventLoopFuture<Void> {
+    public func start(token: ApiAccessToken, config: SluConfig, appId: String? = nil) -> EventLoopFuture<Void> {
         let future: EventLoopFuture<SluStream>
 
         switch self.state {
@@ -105,10 +105,10 @@ extension SluClient: SluClientProtocol {
             future = self
                 .stopStream(stream: stream)
                 .flatMap {
-                    self.makeStream(token: token, config: config)
+                    self.makeStream(token: token, config: config, appId: appId)
                 }
         case .idle:
-            future = self.makeStream(token: token, config: config)
+            future = self.makeStream(token: token, config: config, appId: appId)
         }
 
         return future.map { stream in
@@ -174,7 +174,7 @@ extension SluClient: SluClientProtocol {
     private typealias SluConfigProto = Speechly_Slu_V1_SLUConfig
     private typealias SluEventProto = Speechly_Slu_V1_SLUEvent
 
-    private func makeStream(token: ApiAccessToken, config: SluConfig) -> EventLoopFuture<SluStream> {
+    private func makeStream(token: ApiAccessToken, config: SluConfig, appId: String?) -> EventLoopFuture<SluStream> {
         var callOptions = makeTokenCallOptions(token: token.tokenString)
         callOptions.requestIDHeader = UUID.init().uuidString
 
@@ -218,6 +218,7 @@ extension SluClient: SluClientProtocol {
                stream.sendMessage(SluRequestProto.with {
                    $0.event = SluEventProto.with {
                        $0.event = .start
+                       $0.appID = appId ?? ""
                    }
                })
             }

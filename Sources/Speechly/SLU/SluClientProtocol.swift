@@ -22,8 +22,9 @@ public protocol SluClientProtocol {
     /// - Parameters:
     ///   - token: An auth token received from Speechly Identity API.
     ///   - config: The configuration of the SLU stream.
+    ///   - appId: The target appId for the audio, if not set in the token.
     /// - Returns: A future which will be fullfilled when the stream has been started.
-    func start(token: ApiAccessToken, config: SluConfig) -> EventLoopFuture<Void>
+    func start(token: ApiAccessToken, config: SluConfig, appId: String?) -> EventLoopFuture<Void>
 
     /// Stops the current SLU recognition stream
     ///

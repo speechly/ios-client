@@ -425,11 +425,11 @@ extension SpeechClient: SpeechClientProtocol {
         }
     }
 
-    public func start() {
+    public func start(appId: String? = nil) {
         self
             .authenticate()
             .flatMap { token in
-                self.sluClient.start(token: token, config: self.appConfig)
+                self.sluClient.start(token: token, config: self.appConfig, appId: appId)
             }
             .flatMapThrowing {
                 try self.audioRecorder.start()
