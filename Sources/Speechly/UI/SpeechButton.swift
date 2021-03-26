@@ -188,11 +188,11 @@ public class SpeechButton: UIView {
     }
     
     private func image(named name: String) -> UIImage? {
-        guard let bundle = Bundle(identifier: "com.speechly.iosclient"),
-              let bundlePath = bundle.path(forResource: "Speechly", ofType: "bundle") else {
+        guard let bundleUrl = Bundle.main.url(forResource: "Speechly", withExtension: "bundle"),
+              let bundle = Bundle(url: bundleUrl) else {
             return nil
         }
-        let imagePath = bundlePath + "/\(name).pdf"
+        let imagePath = bundle.path(forResource: name, ofType: "pdf")
         return UIImage(contentsOfFile: imagePath)
     }
 }
