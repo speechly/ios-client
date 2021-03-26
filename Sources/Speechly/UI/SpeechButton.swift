@@ -116,9 +116,9 @@ public class SpeechButton: UIView {
     
     private let iconView = UIImageView()
     
-    private let borderView = UIImageView(image: UIImage(named: "mic-button-frame"))
+    private lazy var borderView = UIImageView(image: self.image(named: "mic-button-frame"))
     
-    private let blurEffectView = UIImageView(image: UIImage(named: "mic-button-fx"))
+    private lazy var blurEffectView = UIImageView(image: self.image(named: "mic-button-fx"))
     
     private let speechBubbleView = SpeechBubbleView()
     
@@ -177,14 +177,19 @@ public class SpeechButton: UIView {
     private func reloadAuthorizationStatus() {
         switch audioAuthorizationStatus {
         case .authorized:
-            iconView.image = UIImage(named: "mic")
+            iconView.image = image(named: "mic")
         case .notDetermined:
-            iconView.image = UIImage(named: "power-on")
+            iconView.image = image(named: "power-on")
         case .denied, .restricted:
-            iconView.image = UIImage(named: "mic-no-permission")
+            iconView.image = image(named: "mic-no-permission")
         @unknown default:
             break
         }
+    }
+    
+    private func image(named name: String) -> UIImage? {
+        let bundle = Bundle(for: type(of: self))
+        return UIImage(named: name, in: bundle, compatibleWith: nil)
     }
 }
 
