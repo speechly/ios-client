@@ -11,11 +11,11 @@ import Foundation
 ///
 /// A segment can be final or tentative. Final segments are guaranteed to only contain final intent, entities
 /// and transcripts. Tentative segments can have a mix of final and tentative parts.
-public struct SpeechSegment: Hashable, Identifiable {
-    private var _entities: [SpeechEntity] = []
-    private var _transcripts: [SpeechTranscript] = []
-    private var _indexedEntities: [SpeechEntity.ID:SpeechEntity] = [:]
-    private var _indexedTranscripts: [Int:SpeechTranscript] = [:]
+public struct Segment: Hashable, Identifiable {
+    private var _entities: [Entity] = []
+    private var _transcripts: [Transcript] = []
+    private var _indexedEntities: [Entity.ID:Entity] = [:]
+    private var _indexedTranscripts: [Int:Transcript] = [:]
 
     /// A unique identifier of the segment.
     public let id: String
@@ -30,10 +30,10 @@ public struct SpeechSegment: Hashable, Identifiable {
     public var isFinal: Bool = false
 
     /// The intent of the segment. Returns an empty tentative intent by default.
-    public var intent: SpeechIntent = SpeechIntent.Empty
+    public var intent: Intent = Intent.Empty
 
     /// The entities belonging to the segment.
-    public var entities: [SpeechEntity] {
+    public var entities: [Entity] {
         get {
             return self._entities
         }
@@ -41,14 +41,14 @@ public struct SpeechSegment: Hashable, Identifiable {
         set(newValue) {
             self._entities = newValue.sorted()
 
-            self._indexedEntities = newValue.reduce(into: [SpeechEntity.ID:SpeechEntity]()) { (acc, entity) in
+            self._indexedEntities = newValue.reduce(into: [Entity.ID:Entity]()) { (acc, entity) in
                 acc[entity.id] = entity
             }
         }
     }
 
     /// The transcripts belonging to the segment.
-    public var transcripts: [SpeechTranscript] {
+    public var transcripts: [Transcript] {
         get {
             return self._transcripts
         }
@@ -56,7 +56,7 @@ public struct SpeechSegment: Hashable, Identifiable {
         set(newValue) {
             self._transcripts = newValue.sorted()
 
-            self._indexedTranscripts = newValue.reduce(into: [Int:SpeechTranscript]()) { (acc, transcript) in
+            self._indexedTranscripts = newValue.reduce(into: [Int:Transcript]()) { (acc, transcript) in
                 acc[transcript.index] = transcript
             }
         }
@@ -89,9 +89,9 @@ public struct SpeechSegment: Hashable, Identifiable {
         segmentId: Int,
         contextId: String,
         isFinal: Bool,
-        intent: SpeechIntent,
-        entities: [SpeechEntity],
-        transcripts: [SpeechTranscript]
+        intent: Intent,
+        entities: [Entity],
+        transcripts: [Transcript]
     ) {
         self.init(segmentId: segmentId, contextId: contextId)
 
@@ -104,34 +104,34 @@ public struct SpeechSegment: Hashable, Identifiable {
 
 // MARK: - Comparable protocol conformance.
 
-extension SpeechSegment: Comparable {
-    public static func < (lhs: SpeechSegment, rhs: SpeechSegment) -> Bool {
+extension Segment: Comparable {
+    public static func < (lhs: Segment, rhs: Segment) -> Bool {
         return lhs.id < rhs.id
     }
 
-    public static func <= (lhs: SpeechSegment, rhs: SpeechSegment) -> Bool {
+    public static func <= (lhs: Segment, rhs: Segment) -> Bool {
         return lhs.id <= rhs.id
     }
 
-    public static func >= (lhs: SpeechSegment, rhs: SpeechSegment) -> Bool {
+    public static func >= (lhs: Segment, rhs: Segment) -> Bool {
         return lhs.id >= rhs.id
     }
 
-    public static func > (lhs: SpeechSegment, rhs: SpeechSegment) -> Bool {
+    public static func > (lhs: Segment, rhs: Segment) -> Bool {
         return lhs.id > rhs.id
     }
 }
 
 // MARK: - Parsing logic implementation.
 
-extension SpeechSegment {
+extension Segment {
     enum SegmentParseError: Error {
         case transcriptFinalised, entityFinalised, intentFinalised
         case emptyTranscript, emptyIntent
         case segmentFinalised
     }
 
-    mutating func setIntent(_ value: SpeechIntent) throws {
+    mutating func setIntent(_ value: Intent) throws {
         if self.isFinal {
             throw SegmentParseError.segmentFinalised
         }
@@ -143,7 +143,7 @@ extension SpeechSegment {
         self.intent = value
     }
 
-    mutating func addEntity(_ value: SpeechEntity) throws {
+    mutating func addEntity(_ value: Entity) throws {
         if self.isFinal {
             throw SegmentParseError.segmentFinalised
         }
@@ -156,7 +156,7 @@ extension SpeechSegment {
         self._entities = Array(self._indexedEntities.values).sorted()
     }
 
-    mutating func addTranscript(_ value: SpeechTranscript) throws {
+    mutating func addTranscript(_ value: Transcript) throws {
         if self.isFinal {
             throw SegmentParseError.segmentFinalised
         }

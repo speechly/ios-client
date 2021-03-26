@@ -7,7 +7,7 @@ import SpeechlyAPI
 ///
 /// A transcript is a single word in a phrase recognised from the audio.
 /// e.g. a phrase "two glasses" will have two transcripts, "two" and "glasses".
-public struct SpeechTranscript: Hashable {
+public struct Transcript: Hashable {
     /// The index of the transcript in the phrase.
     public let index: Int
 
@@ -46,7 +46,7 @@ public struct SpeechTranscript: Hashable {
 
 // MARK: - Identifiable protocol conformance.
 
-extension SpeechTranscript: Identifiable {
+extension Transcript: Identifiable {
     public var id: Int {
         return self.index
     }
@@ -54,30 +54,30 @@ extension SpeechTranscript: Identifiable {
 
 // MARK: - `Comparable` protocol conformance.
 
-extension SpeechTranscript: Comparable {
-    public static func < (lhs: SpeechTranscript, rhs: SpeechTranscript) -> Bool {
+extension Transcript: Comparable {
+    public static func < (lhs: Transcript, rhs: Transcript) -> Bool {
         return lhs.index < rhs.index
     }
 
-    public static func <= (lhs: SpeechTranscript, rhs: SpeechTranscript) -> Bool {
+    public static func <= (lhs: Transcript, rhs: Transcript) -> Bool {
         return lhs.index <= rhs.index
     }
 
-    public static func >= (lhs: SpeechTranscript, rhs: SpeechTranscript) -> Bool {
+    public static func >= (lhs: Transcript, rhs: Transcript) -> Bool {
         return lhs.index >= rhs.index
     }
 
-    public static func > (lhs: SpeechTranscript, rhs: SpeechTranscript) -> Bool {
+    public static func > (lhs: Transcript, rhs: Transcript) -> Bool {
         return lhs.index > rhs.index
     }
 }
 
 // MARK: - SluProtoParseable implementation.
 
-extension SpeechTranscript: SluProtoParseable {
+extension Transcript: SluProtoParseable {
     typealias TranscriptProto = Speechly_Slu_V1_SLUTranscript
 
-    static func parseProto(message: TranscriptProto, isFinal: Bool) -> SpeechTranscript {
+    static func parseProto(message: TranscriptProto, isFinal: Bool) -> Transcript {
         return self.init(
             index: Int(message.index),
             value: message.word,

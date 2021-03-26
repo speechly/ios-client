@@ -11,9 +11,9 @@ import SpeechlyAPI
 ///
 /// Intents can and should be used to dispatch the action that the user wants to do in the app
 /// (e.g. book a meeting, schedule a flight, reset the form).
-public struct SpeechIntent: Hashable {
+public struct Intent: Hashable {
     /// An empty intent. Can be used as default value in other places.
-    public static let Empty = SpeechIntent(value: "", isFinal: false)
+    public static let Empty = Intent(value: "", isFinal: false)
 
     /// The value of the intent, as defined in Speechly application configuration.
     /// e.g. in the example "*book book a [burger restaurant](restaurant_type)" it would be `book`.
@@ -38,7 +38,7 @@ public struct SpeechIntent: Hashable {
 
 // MARK: - Identifiable protocol conformance.
 
-extension SpeechIntent: Identifiable {
+extension Intent: Identifiable {
     public var id: String {
         return self.value
     }
@@ -46,30 +46,30 @@ extension SpeechIntent: Identifiable {
 
 // MARK: - Comparable protocol conformance.
 
-extension SpeechIntent: Comparable {
-    public static func < (lhs: SpeechIntent, rhs: SpeechIntent) -> Bool {
+extension Intent: Comparable {
+    public static func < (lhs: Intent, rhs: Intent) -> Bool {
         return lhs.value < rhs.value
     }
 
-    public static func <= (lhs: SpeechIntent, rhs: SpeechIntent) -> Bool {
+    public static func <= (lhs: Intent, rhs: Intent) -> Bool {
         return lhs.value <= rhs.value
     }
 
-    public static func >= (lhs: SpeechIntent, rhs: SpeechIntent) -> Bool {
+    public static func >= (lhs: Intent, rhs: Intent) -> Bool {
         return lhs.value >= rhs.value
     }
 
-    public static func > (lhs: SpeechIntent, rhs: SpeechIntent) -> Bool {
+    public static func > (lhs: Intent, rhs: Intent) -> Bool {
         return lhs.value > rhs.value
     }
 }
 
 // MARK: - SluProtoParseable implementation.
 
-extension SpeechIntent: SluProtoParseable {
+extension Intent: SluProtoParseable {
     typealias IntentProto = Speechly_Slu_V1_SLUIntent
 
-    static func parseProto(message: IntentProto, isFinal: Bool) -> SpeechIntent {
+    static func parseProto(message: IntentProto, isFinal: Bool) -> Intent {
         return self.init(value: message.intent, isFinal: isFinal)
     }
 }

@@ -17,7 +17,7 @@ import SpeechlyAPI
 /// * Entity "tomorrow" - `startIndex = 5, endIndex = 5`
 ///
 /// The start index is inclusive, but the end index is exclusive, i.e. the interval is `[startIndex, endIndex)`.
-public struct SpeechEntity: Hashable, Identifiable {
+public struct Entity: Hashable, Identifiable {
     /// A custom ID implementation for `SpeechEntity`.
     /// Since entities have two indices, start and end,
     /// this struct encapsulates the two for indexing and sorting purposes.
@@ -93,30 +93,30 @@ public struct SpeechEntity: Hashable, Identifiable {
 
 // MARK: - Comparable protocol conformance.
 
-extension SpeechEntity: Comparable {
-    public static func < (lhs: SpeechEntity, rhs: SpeechEntity) -> Bool {
+extension Entity: Comparable {
+    public static func < (lhs: Entity, rhs: Entity) -> Bool {
         return lhs.id < rhs.id
     }
 
-    public static func <= (lhs: SpeechEntity, rhs: SpeechEntity) -> Bool {
+    public static func <= (lhs: Entity, rhs: Entity) -> Bool {
         return lhs.id <= rhs.id
     }
 
-    public static func >= (lhs: SpeechEntity, rhs: SpeechEntity) -> Bool {
+    public static func >= (lhs: Entity, rhs: Entity) -> Bool {
         return lhs.id >= rhs.id
     }
 
-    public static func > (lhs: SpeechEntity, rhs: SpeechEntity) -> Bool {
+    public static func > (lhs: Entity, rhs: Entity) -> Bool {
         return lhs.id > rhs.id
     }
 }
 
 // MARK: - SluProtoParseable implementation.
 
-extension SpeechEntity: SluProtoParseable {
+extension Entity: SluProtoParseable {
     typealias EntityProto = Speechly_Slu_V1_SLUEntity
 
-    static func parseProto(message: EntityProto, isFinal: Bool) -> SpeechEntity {
+    static func parseProto(message: EntityProto, isFinal: Bool) -> Entity {
         return self.init(
             value: message.value,
             type: message.entity,

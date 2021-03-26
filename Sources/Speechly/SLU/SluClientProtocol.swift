@@ -15,21 +15,36 @@ public protocol SluClientProtocol {
     /// A delegate which is called when the client receives messages from the API or catches errors.
     var delegate: SluClientDelegate? { get set }
 
-    /// Starts a new SLU recognition stream.
+    /// Connects to the SLU API.
     ///
-    /// - Important: Calling `start` again will stop previous stream and start a new one.
+    /// - Important: Calling `connect` again will first disconnect and then connect again.
     ///
     /// - Parameters:
     ///   - token: An auth token received from Speechly Identity API.
     ///   - config: The configuration of the SLU stream.
+    /// - Returns: A future which will be fullfilled when the stream has been connected.
+    func connect(token: ApiAccessToken, config: SluConfig) -> EventLoopFuture<Void>
+    
+    /// Disconnects the current connection to the SLU API.
+    ///
+    /// If there is an active `Context`, it is cancelled.
+    ///
+    /// - Returns: A future which is fulfilled when the stream has been disconnected.
+    func disconnect() -> EventLoopFuture<Void>
+
+    /// Starts a new SLU recognition stream.
+    ///
+    /// - Important: Calling `startContext` again will stop previous context and start a new one.
+    ///
+    /// - Parameters:
     ///   - appId: The target appId for the audio, if not set in the token.
     /// - Returns: A future which will be fullfilled when the stream has been started.
-    func start(token: ApiAccessToken, config: SluConfig, appId: String?) -> EventLoopFuture<Void>
-
+    func startContext(appId: String?) -> EventLoopFuture<Void>
+    
     /// Stops the current SLU recognition stream
     ///
     /// - Returns: A future which will be fullfilled when the stream has been closed from the client side.
-    func stop() -> EventLoopFuture<Void>
+    func stopContext() -> EventLoopFuture<Void>
 
     /// Suspends the client by terminating any in-flight streams and disconnecting the channels.
     ///
@@ -49,7 +64,7 @@ public protocol SluClientProtocol {
     /// - Parameters:
     ///   - data: The audio data to write to the stream
     /// - Returns: A future which will be fullfilled when the data has been sent.
-    func write(data: Data) -> EventLoopFuture<Bool>
+    func write(data: Data) -> EventLoopFuture<Void>
 }
 
 /// SLU stream configuration describes the audio data sent to the stream.
@@ -203,12 +218,12 @@ public extension SluClientDelegate {
         _ sluClient: SluClientProtocol, contextId: String, segmentId: Int, intent: TentativeIntent
     ){}
     func sluClientDidReceiveTranscript(
-        _ sluClient: SluClientProtocol, contextId: String, segmentId: Int, transcript: Transcript
+        _ sluClient: SluClientProtocol, contextId: String, segmentId: Int, transcript: Speechly.Transcript
     ){}
     func sluClientDidReceiveEntity(
-        _ sluClient: SluClientProtocol, contextId: String, segmentId: Int, entity: Entity
+        _ sluClient: SluClientProtocol, contextId: String, segmentId: Int, entity: Speechly.Entity
     ){}
     func sluClientDidReceiveIntent(
-        _ sluClient: SluClientProtocol, contextId: String, segmentId: Int, intent: Intent
+        _ sluClient: SluClientProtocol, contextId: String, segmentId: Int, intent: Speechly.Intent
     ){}
 }
