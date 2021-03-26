@@ -188,7 +188,8 @@ public class SpeechButton: UIView {
     }
     
     private func image(named name: String) -> UIImage? {
-        return UIImage(named: "Speechly.framework/\(name)")
+        let bundle = Bundle(identifier: "Speechly")
+        return UIImage(named: name, in: bundle, compatibleWith: nil)
     }
 }
 
