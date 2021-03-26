@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		483C1B71260E7460009ECEEE /* lock.pdf in CopyFiles */ = {isa = PBXBuildFile; fileRef = 483C1AE8260E6E6C009ECEEE /* lock.pdf */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		483C1B72260E7460009ECEEE /* mic-button-frame.pdf in CopyFiles */ = {isa = PBXBuildFile; fileRef = 483C1AE6260E6E6C009ECEEE /* mic-button-frame.pdf */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		483C1B73260E7460009ECEEE /* mic-button-fx.pdf in CopyFiles */ = {isa = PBXBuildFile; fileRef = 483C1AE3260E6E6C009ECEEE /* mic-button-fx.pdf */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		483C1B74260E7460009ECEEE /* mic-no-permission.pdf in CopyFiles */ = {isa = PBXBuildFile; fileRef = 483C1AE5260E6E6C009ECEEE /* mic-no-permission.pdf */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		483C1B75260E7460009ECEEE /* mic-no-support.pdf in CopyFiles */ = {isa = PBXBuildFile; fileRef = 483C1AE2260E6E6C009ECEEE /* mic-no-support.pdf */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		483C1B76260E7460009ECEEE /* mic.pdf in CopyFiles */ = {isa = PBXBuildFile; fileRef = 483C1AE4260E6E6C009ECEEE /* mic.pdf */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		483C1B77260E7460009ECEEE /* power-on.pdf in CopyFiles */ = {isa = PBXBuildFile; fileRef = 483C1AE7260E6E6C009ECEEE /* power-on.pdf */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		48AA45A925C9E4310021B9DA /* SpeechButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48AA45A825C9E42C0021B9DA /* SpeechButton.swift */; };
 		48F053E825CB596D00F362E9 /* SpeechBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48F053E725CB596D00F362E9 /* SpeechBubbleView.swift */; };
 		48F0556A25CDEF6600F362E9 /* SpeechTranscriptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48F0556925CDEF6600F362E9 /* SpeechTranscriptView.swift */; };
@@ -48,6 +55,25 @@
 			remoteInfo = Speechly;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		483C1B70260E7447009ECEEE /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				483C1B71260E7460009ECEEE /* lock.pdf in CopyFiles */,
+				483C1B72260E7460009ECEEE /* mic-button-frame.pdf in CopyFiles */,
+				483C1B73260E7460009ECEEE /* mic-button-fx.pdf in CopyFiles */,
+				483C1B74260E7460009ECEEE /* mic-no-permission.pdf in CopyFiles */,
+				483C1B75260E7460009ECEEE /* mic-no-support.pdf in CopyFiles */,
+				483C1B76260E7460009ECEEE /* mic.pdf in CopyFiles */,
+				483C1B77260E7460009ECEEE /* power-on.pdf in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		483C1AE2260E6E6C009ECEEE /* mic-no-support.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "mic-no-support.pdf"; sourceTree = "<group>"; };
@@ -3191,6 +3217,7 @@
 			buildPhases = (
 				OBJ_2226 /* Sources */,
 				OBJ_2231 /* Frameworks */,
+				483C1B70260E7447009ECEEE /* CopyFiles */,
 			);
 			buildRules = (
 			);
