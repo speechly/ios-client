@@ -24,3 +24,20 @@ func authenticate(appId: UUID, deviceId: UUID) -> EventLoopFuture<ApiAccessToken
 #### Returns
 
 A future that succeeds with an access token or fails with an error if authentication fails.
+
+### authenticateProject(projectId:​deviceId:​)
+
+Exchanges project and device identifiers for an access token to Speechly API.
+
+``` swift
+func authenticateProject(projectId: UUID, deviceId: UUID) -> EventLoopFuture<ApiAccessToken>
+```
+
+#### Parameters
+
+  - projectId: Speechly project identifier. All applications in the project are accesible during connection.
+  - deviceId: Device identifier.
+
+#### Returns
+
+A future that succeeds with an access token or fails with an error if authentication fails.

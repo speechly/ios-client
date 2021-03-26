@@ -21,12 +21,12 @@ A delegate which is called when the client receives messages from the API or cat
 var delegate: SluClientDelegate?
 ```
 
-### start(token:​config:​)
+### start(token:​config:​appId:​)
 
 Starts a new SLU recognition stream.
 
 ``` swift
-func start(token: ApiAccessToken, config: SluConfig) -> EventLoopFuture<Void>
+func start(token: ApiAccessToken, config: SluConfig, appId: String?) -> EventLoopFuture<Void>
 ```
 
 > 
@@ -35,6 +35,7 @@ func start(token: ApiAccessToken, config: SluConfig) -> EventLoopFuture<Void>
 
   - token: An auth token received from Speechly Identity API.
   - config: The configuration of the SLU stream.
+  - appId: The target appId for the audio, if not set in the token.
 
 #### Returns
 

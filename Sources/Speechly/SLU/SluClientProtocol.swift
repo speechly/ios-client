@@ -22,8 +22,9 @@ public protocol SluClientProtocol {
     /// - Parameters:
     ///   - token: An auth token received from Speechly Identity API.
     ///   - config: The configuration of the SLU stream.
+    ///   - appId: The target appId for the audio, if not set in the token.
     /// - Returns: A future which will be fullfilled when the stream has been started.
-    func start(token: ApiAccessToken, config: SluConfig) -> EventLoopFuture<Void>
+    func start(token: ApiAccessToken, config: SluConfig, appId: String?) -> EventLoopFuture<Void>
 
     /// Stops the current SLU recognition stream
     ///
@@ -54,22 +55,11 @@ public protocol SluClientProtocol {
 /// SLU stream configuration describes the audio data sent to the stream.
 /// If misconfigured, the recognition stream will not produce any useful results.
 public struct SluConfig {
-    /// Language codes for supported audio languages.
-    public enum LanguageCode: String {
-        case enUS = "en-US"
-        case fiFI = "fi-FI"
-    }
-
     /// The sample rate of the audio sent to the stream, in Hertz.
     public let sampleRate: Double
 
     /// The number of channels in the audio sent to the stream.
     public let channels: UInt32
-
-    /// The language of the audio sent to the stream.
-    /// Must be the same as the language used for configuring Speechly application,
-    /// which is passed in the token to `start`.
-    public let languageCode: LanguageCode
 }
 
 // MARK: - SluClientDelegate definition.

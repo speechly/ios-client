@@ -20,15 +20,19 @@ The delegate will also be called when the client catches an error.
 var delegate: SpeechClientDelegate?
 ```
 
-### start()
+### start(appId:​)
 
 Start a new recognition context and unmute the microphone.
 
 ``` swift
-func start()
+func start(appId: String?)
 ```
 
 > 
+
+#### Parameters
+
+  - appId: Define a specific Speechly appId to send the audio to. Not needed if the appId can be inferred from login.
 
 ### stop()
 

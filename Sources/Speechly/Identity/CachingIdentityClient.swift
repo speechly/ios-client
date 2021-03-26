@@ -31,9 +31,9 @@ public class CachingIdentityClient {
 
 extension CachingIdentityClient: IdentityClientProtocol {
     public func authenticate(appId: UUID, deviceId: UUID) -> EventLoopFuture<ApiAccessToken> {
-        let token = loadToken(appId: appId, deviceId: deviceId)
+        let token = loadToken(key: appId, deviceId: deviceId)
 
-        if token != nil && token!.validate(appId: appId, deviceId: deviceId, expiresIn: defaultExpiresIn) {
+        if token != nil && token!.validate(key: appId, deviceId: deviceId, expiresIn: defaultExpiresIn) {
             return self.baseClient.makeSucceededFuture(token!)
         }
 
@@ -42,8 +42,20 @@ extension CachingIdentityClient: IdentityClientProtocol {
             .map({ newToken in self.storeToken(token: newToken) })
     }
 
-    private func loadToken(appId: UUID, deviceId: UUID) -> ApiAccessToken? {
-        let cacheKey = makeCacheKey(appId: appId, deviceId: deviceId)
+    public func authenticateProject(projectId: UUID, deviceId: UUID) -> EventLoopFuture<ApiAccessToken> {
+        let token = loadToken(key: projectId, deviceId: deviceId)
+
+        if token != nil && token!.validate(key: projectId, deviceId: deviceId, expiresIn: defaultExpiresIn) {
+            return self.baseClient.makeSucceededFuture(token!)
+        }
+
+        return self.baseClient
+            .authenticateProject(projectId: projectId, deviceId: deviceId)
+            .map({ newToken in self.storeToken(token: newToken) })
+    }
+
+    private func loadToken(key: UUID, deviceId: UUID) -> ApiAccessToken? {
+        let cacheKey = makeCacheKey(key: key, deviceId: deviceId)
 
         if let val = self.memCache[cacheKey] {
             return val
@@ -57,7 +69,7 @@ extension CachingIdentityClient: IdentityClientProtocol {
     }
 
     private func storeToken(token: ApiAccessToken) -> ApiAccessToken {
-        let cacheKey = makeCacheKey(appId: token.appId, deviceId: token.deviceId)
+        let cacheKey = makeCacheKey(key: token.key(), deviceId: token.deviceId)
 
         self.memCache[cacheKey] = token
         self.cache.setValue(token.tokenString, forKey: cacheKey)
@@ -65,7 +77,7 @@ extension CachingIdentityClient: IdentityClientProtocol {
         return token
     }
 
-    private func makeCacheKey(appId: UUID, deviceId: UUID) -> String {
-        return "authToken.\(appId.hashValue).\(deviceId.hashValue)"
+    private func makeCacheKey(key: UUID, deviceId: UUID) -> String {
+        return "authToken.\(key.hashValue).\(deviceId.hashValue)"
     }
 }

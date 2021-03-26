@@ -13,7 +13,8 @@ import NIO
 ///
 /// The client is ready to use once initialised.
 public class SpeechClient {
-    private let appId: UUID
+    private let appId: UUID?
+    private let projectId: UUID?
     private let appConfig: SluConfig
     private let cache: CacheProtocol
     private let identityClient: IdentityClientProtocol
@@ -90,14 +91,17 @@ public class SpeechClient {
 
     private var contexts: SpeechContexts = SpeechContexts()
 
-    /// An enum listing supported Speechly application languages.
-    public typealias LanguageCode = SluConfig.LanguageCode
-
+    /// Represents different error situations when initializing the SpeechlyClient.
+    public enum SpeechlyClientInitError: Error {
+        /// no appId or projectId given.
+        case keysMissing
+    }
+    
     /// Creates a new `SpeechClient`.
     ///
     /// - Parameters:
-    ///     - appId: Speechly application identifier.
-    ///     - language: Speechly application language.
+    ///     - appId: Speechly application identifier. Eiither appId or projectId is needed.
+    ///     - projectId: Speechly projectt identifier. Eiither appId or projectId is needed.
     ///     - prepareOnInit: Whether the client should prepare on initialisation.
     ///                      Preparing means initialising the audio stack
     ///                      and fetching the authentication token for the API.
@@ -106,14 +110,17 @@ public class SpeechClient {
     ///     - eventLoopGroup: SwiftNIO event loop group to use.
     ///     - delegateDispatchQueue: `DispatchQueue` to use for dispatching calls to the delegate.
     public convenience init(
-        appId: UUID,
-        language: LanguageCode,
+        appId: UUID? = nil,
+        projectId: UUID? = nil,
         prepareOnInit: Bool = true,
         identityAddr: String = "grpc+tls://api.speechly.com",
         sluAddr: String = "grpc+tls://api.speechly.com",
         eventLoopGroup: EventLoopGroup = PlatformSupport.makeEventLoopGroup(loopCount: 1),
         delegateDispatchQueue: DispatchQueue = DispatchQueue(label: "com.speechly.iosclient.SpeechClient.delegateQueue")
     ) throws {
+        if appId == nil && projectId == nil {
+            throw SpeechlyClientInitError.keysMissing
+        }
         let sluClient = try SluClient(addr: sluAddr, loopGroup: eventLoopGroup)
         let baseIdentityClient = try IdentityClient(addr: identityAddr, loopGroup: eventLoopGroup)
         let cache = UserDefaultsCache()
@@ -122,7 +129,7 @@ public class SpeechClient {
 
         try self.init(
             appId: appId,
-            language: language,
+            projectId: projectId,
             prepareOnInit: prepareOnInit,
             sluClient: sluClient,
             identityClient: identityClient,
@@ -134,8 +141,8 @@ public class SpeechClient {
     /// Creates a new `SpeechClient`.
     ///
     /// - Parameters:
-    ///     - appId: Speechly application identifier.
-    ///     - language: Speechly application language.
+    ///     - appId: Speechly application identifier. Eiither appId or projectId is needed.
+    ///     - projectId: Speechly projectt identifier. Eiither appId or projectId is needed.
     ///     - prepareOnInit: Whether the client should prepare on initialisation.
     ///                      Preparing means initialising the audio stack
     ///                      and fetching the authentication token for the API.
@@ -145,8 +152,8 @@ public class SpeechClient {
     ///     - audioRecorder: An implementaion of an audio recorder.
     ///     - delegateDispatchQueue: `DispatchQueue` to use for dispatching calls to the delegate.
     public init(
-        appId: UUID,
-        language: LanguageCode,
+        appId: UUID? = nil,
+        projectId: UUID? = nil,
         prepareOnInit: Bool,
         sluClient: SluClientProtocol,
         identityClient: IdentityClientProtocol,
@@ -155,6 +162,7 @@ public class SpeechClient {
         delegateDispatchQueue: DispatchQueue
     ) throws {
         self.appId = appId
+        self.projectId = projectId
         self.sluClient = sluClient
         self.identityClient = identityClient
         self.cache = cache
@@ -163,8 +171,7 @@ public class SpeechClient {
 
         self.appConfig = SluConfig(
             sampleRate: audioRecorder.sampleRate,
-            channels: audioRecorder.channels,
-            languageCode: language
+            channels: audioRecorder.channels
         )
 
         self.sluClient.delegate = self
@@ -183,7 +190,10 @@ public class SpeechClient {
     }
 
     private func authenticate() -> EventLoopFuture<ApiAccessToken> {
-        return self.identityClient.authenticate(appId: self.appId, deviceId: self.deviceId)
+        if let projectId = self.projectId {
+            return self.identityClient.authenticateProject(projectId: projectId, deviceId: self.deviceId)
+        }
+        return self.identityClient.authenticate(appId: self.appId!, deviceId: self.deviceId)
     }
 }
 
@@ -424,11 +434,11 @@ extension SpeechClient: SpeechClientProtocol {
         }
     }
 
-    public func start() {
+    public func start(appId: String? = nil) {
         self
             .authenticate()
             .flatMap { token in
-                self.sluClient.start(token: token, config: self.appConfig)
+                self.sluClient.start(token: token, config: self.appConfig, appId: appId)
             }
             .flatMapThrowing {
                 try self.audioRecorder.start()

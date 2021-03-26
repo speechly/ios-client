@@ -14,10 +14,13 @@ public protocol SpeechClientProtocol {
 
     /// Start a new recognition context and unmute the microphone.
     ///
+    /// - Parameters:
+    ///   - appId: Define a specific Speechly appId to send the audio to. Not needed if the appId can be inferred from login.
+    ///
     /// - Important: Calling `start` again after another `start` call will stop the previous recognition context.
     ///   Starting a recognition context is an asynchronous operation.
     ///   Use `speechlyClientDidStart` method in `SpeechClientDelegate` protocol for acknowledgments from the client.
-    func start()
+    func start(appId: String?)
 
     /// Stop current recognition context and mute the microphone.
     ///
