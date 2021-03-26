@@ -50,6 +50,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		483C1AE2260E6E6C009ECEEE /* mic-no-support.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "mic-no-support.pdf"; sourceTree = "<group>"; };
+		483C1AE3260E6E6C009ECEEE /* mic-button-fx.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "mic-button-fx.pdf"; sourceTree = "<group>"; };
+		483C1AE4260E6E6C009ECEEE /* mic.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = mic.pdf; sourceTree = "<group>"; };
+		483C1AE5260E6E6C009ECEEE /* mic-no-permission.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "mic-no-permission.pdf"; sourceTree = "<group>"; };
+		483C1AE6260E6E6C009ECEEE /* mic-button-frame.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "mic-button-frame.pdf"; sourceTree = "<group>"; };
+		483C1AE7260E6E6C009ECEEE /* power-on.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "power-on.pdf"; sourceTree = "<group>"; };
+		483C1AE8260E6E6C009ECEEE /* lock.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = lock.pdf; sourceTree = "<group>"; };
 		48AA45A825C9E42C0021B9DA /* SpeechButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechButton.swift; sourceTree = "<group>"; };
 		48F053E725CB596D00F362E9 /* SpeechBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechBubbleView.swift; sourceTree = "<group>"; };
 		48F0556925CDEF6600F362E9 /* SpeechTranscriptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechTranscriptView.swift; sourceTree = "<group>"; };
@@ -1003,6 +1010,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		483C1AE1260E6E02009ECEEE /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				483C1AE8260E6E6C009ECEEE /* lock.pdf */,
+				483C1AE6260E6E6C009ECEEE /* mic-button-frame.pdf */,
+				483C1AE3260E6E6C009ECEEE /* mic-button-fx.pdf */,
+				483C1AE5260E6E6C009ECEEE /* mic-no-permission.pdf */,
+				483C1AE2260E6E6C009ECEEE /* mic-no-support.pdf */,
+				483C1AE4260E6E6C009ECEEE /* mic.pdf */,
+				483C1AE7260E6E6C009ECEEE /* power-on.pdf */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		48D0A23825C9E2E1002711E1 /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -2236,6 +2257,7 @@
 			children = (
 				F51380D02566F70600EDF449 /* .github */,
 				OBJ_7 /* Sources */,
+				483C1AE1260E6E02009ECEEE /* Resources */,
 				OBJ_13 /* Tests */,
 				OBJ_14 /* Dependencies */,
 				OBJ_1040 /* Products */,
