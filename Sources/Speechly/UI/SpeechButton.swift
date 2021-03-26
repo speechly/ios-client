@@ -200,7 +200,7 @@ public class SpeechButton: UIView {
 private extension UIView {
     
     func startRotating(duration: TimeInterval = 2) {
-        let rotation : CABasicAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
+        let rotation = CABasicAnimation(keyPath: "transform.rotation.z")
         rotation.toValue = NSNumber(value: Double.pi * 2)
         rotation.duration = duration
         rotation.isCumulative = true
