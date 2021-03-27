@@ -61,7 +61,7 @@ public class SpeechButton: UIView {
             make.bottom.equalTo(snp.top).offset(-4)
         }
         
-        let tap = UITapGestureRecognizer(target: self, action: #selector(didTap(_:)))
+        let tap = UITapGestureRecognizer(target: self, action: #selector(didTap))
         addGestureRecognizer(tap)
         
         let press = UILongPressGestureRecognizer(target: self, action: #selector(didPress(_:)))
@@ -132,14 +132,19 @@ public class SpeechButton: UIView {
             contentView.transform = CGAffineTransform(scaleX: scale, y: scale)
             blurEffectView.alpha = isPressed ? 1 : 0
             
-            if audioAuthorizationStatus == .authorized,
-               let client = client,
-               isPressed != oldValue {
-                
-                if isPressed {
-                    client.start()
+            if isPressed != oldValue {
+                if audioAuthorizationStatus == .authorized {
+                    if let client = client {
+                        if isPressed {
+                            client.start()
+                        } else {
+                            client.stop()
+                        }
+                    }
                 } else {
-                    client.stop()
+                    if isPressed {
+                        didTap()
+                    }
                 }
             }
             
@@ -164,7 +169,7 @@ public class SpeechButton: UIView {
         borderView.startRotating()
     }
     
-    @objc private func didTap(_ sender: UITapGestureRecognizer) {
+    @objc private func didTap() {
         switch audioAuthorizationStatus {
         case .authorized:
             if speechBubbleView.isShowing {
