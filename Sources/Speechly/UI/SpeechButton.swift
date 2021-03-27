@@ -7,7 +7,14 @@ public protocol SpeechButtonDelegate: NSObjectProtocol {
     
     func clientForSpeechButton(_ button: SpeechButton) -> SpeechClient?
     
-    optional func speechButtonImageForAuthorizationStatus(_ button: SpeechButton, status: AVAuthorizationStatus) -> UIImage?
+    func speechButtonImageForAuthorizationStatus(_ button: SpeechButton, status: AVAuthorizationStatus) -> UIImage?
+}
+
+public extension SpeechButtonDelegate {
+    
+    func speechButtonImageForAuthorizationStatus(_ button: SpeechButton, status: AVAuthorizationStatus) -> UIImage? {
+        return nil
+    }
 }
 
 public class SpeechButton: UIView {
@@ -205,7 +212,7 @@ public class SpeechButton: UIView {
     }
     
     private func reloadAuthorizationStatus() {
-        if let image = delegate?.speechButtonImageForAuthorizationStatus?(self, status: audioAuthorizationStatus) {
+        if let image = delegate?.speechButtonImageForAuthorizationStatus(self, status: audioAuthorizationStatus) {
             return image
         }
         
