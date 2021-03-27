@@ -114,7 +114,7 @@ extension SpeechlyManager: SpeechClientDelegate {
 
 Check out the [ios-repo-filtering](https://github.com/speechly/ios-repo-filtering) repository for a demo app built using this client.
 
-###User interface components
+### User interface components
 
 The client library also includes a couple of ready-made UI components which can be used together with `SpeechClient`.
 
@@ -124,7 +124,7 @@ The client library also includes a couple of ready-made UI components which can 
 
 These can be used, for example, in the following way:
 
-```
+```swift
 import UIKit
 import SnapKit
 import Speechly
