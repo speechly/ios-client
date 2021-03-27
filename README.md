@@ -59,7 +59,7 @@ class SpeechlyManager {
     let client: SpeechClient
 
     public init() {
-        self.client = try! SpeechClient(
+        client = try! SpeechClient(
             // Specify your Speechly application's identifier here.
             appId: UUID(uuidString: "your-speechly-app-id")!,
 
@@ -67,19 +67,19 @@ class SpeechlyManager {
             language: .enUS
         )
 
-        self.client.delegate = self
+        client.delegate = self
     }
 
     public func start() {
         // Use this to unmute the microphone and start recognising user's voice input.
         // You can call this when e.g. a button is pressed.
-        self.client.start()
+        client.start()
     }
 
     public func stop() {
         // Use this to mute the microphone and stop recognising user's voice input.
         // You can call this when e.g. a button is depressed.
-        self.client.stop()
+        client.stop()
     }
 }
 
