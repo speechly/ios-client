@@ -82,7 +82,7 @@ public class SpeechButton: UIView {
         }
     }
     
-    public var pressedScale: CGFloat = 1.3
+    public var pressedScale: CGFloat = 1.5
     
     private var normalScale: CGFloat {
         return diameter / borderView.intrinsicContentSize.width
