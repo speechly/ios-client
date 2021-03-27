@@ -70,6 +70,9 @@ public class SpeechButton: UIView {
         
         initializeState()
         initializeRotationAnimation()
+        
+        isAccessibilityElement = true
+        accessibilityTraits = [.button]
     }
     
     required init?(coder: NSCoder) {
