@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/speechly/api.git",
         "state": {
           "branch": null,
-          "revision": "8afdf0120a8da42070f19a7d0705149f543fa492",
-          "version": "1.0.0-alpha.1"
+          "revision": "f89a6312df3826e03e4528a3224d7ece6f60d8c5",
+          "version": "0.1.3"
         }
       },
       {
@@ -15,8 +15,13 @@
         "repositoryURL": "https://github.com/grpc/grpc-swift.git",
         "state": {
           "branch": null,
+<<<<<<< HEAD
           "revision": "34c984c02089c1aa35484e1fd772bc19611300f8",
           "version": "1.0.0-alpha.24"
+=======
+          "revision": "9e464a75079928366aa7041769a271fac89271bf",
+          "version": "1.0.0"
+>>>>>>> master
         }
       },
       {
@@ -47,12 +52,26 @@
         }
       },
       {
+        "package": "swift-nio-extras",
+        "repositoryURL": "https://github.com/apple/swift-nio-extras.git",
+        "state": {
+          "branch": null,
+          "revision": "de1c80ad1fdff1ba772bcef6b392c3ef735f39a6",
+          "version": "1.8.0"
+        }
+      },
+      {
         "package": "swift-nio-http2",
         "repositoryURL": "https://github.com/apple/swift-nio-http2.git",
         "state": {
           "branch": null,
+<<<<<<< HEAD
           "revision": "d4060ac4d056a48d946298f04968f6f6080cc618",
           "version": "1.16.2"
+=======
+          "revision": "f4736a3b78a2bbe3feb7fc0f33f6683a8c27974c",
+          "version": "1.16.3"
+>>>>>>> master
         }
       },
       {

@@ -15,48 +15,38 @@ The client is ready to use once initialised.
 
 [`AudioRecorderDelegate`](AudioRecorderDelegate), [`SluClientDelegate`](SluClientDelegate), [`SpeechClientProtocol`](SpeechClientProtocol)
 
-## Nested Type Aliases
-
-### `LanguageCode`
-
-An enum listing supported Speechly application languages.
-
-``` swift
-public typealias LanguageCode = SluConfig.LanguageCode
-```
-
 ## Initializers
 
-### `init(appId:language:prepareOnInit:identityAddr:sluAddr:eventLoopGroup:delegateDispatchQueue:)`
+### `init(appId:projectId:prepareOnInit:identityAddr:sluAddr:eventLoopGroup:delegateDispatchQueue:)`
 
 Creates a new `SpeechClient`.
 
 ``` swift
-public convenience init(appId: UUID, language: LanguageCode, prepareOnInit: Bool = true, identityAddr: String = "grpc+tls://api.speechly.com", sluAddr: String = "grpc+tls://api.speechly.com", eventLoopGroup: EventLoopGroup = PlatformSupport.makeEventLoopGroup(loopCount: 1), delegateDispatchQueue: DispatchQueue = DispatchQueue(label: "com.speechly.iosclient.SpeechClient.delegateQueue")) throws
+public convenience init(appId: UUID? = nil, projectId: UUID? = nil, prepareOnInit: Bool = true, identityAddr: String = "grpc+tls://api.speechly.com", sluAddr: String = "grpc+tls://api.speechly.com", eventLoopGroup: EventLoopGroup = PlatformSupport.makeEventLoopGroup(loopCount: 1), delegateDispatchQueue: DispatchQueue = DispatchQueue(label: "com.speechly.iosclient.SpeechClient.delegateQueue")) throws
 ```
 
 #### Parameters
 
-  - appId: Speechly application identifier.
-  - language: Speechly application language.
+  - appId: Speechly application identifier. Eiither appId or projectId is needed.
+  - projectId: Speechly projectt identifier. Eiither appId or projectId is needed.
   - prepareOnInit: Whether the client should prepare on initialisation. Preparing means initialising the audio stack and fetching the authentication token for the API.
   - identityAddr: The address of Speechly Identity gRPC service. Defaults to Speechly public API endpoint.
   - sluAddr: The address of Speechly SLU gRPC service. Defaults to Speechly public API endpoint.
   - eventLoopGroup: SwiftNIO event loop group to use.
   - delegateDispatchQueue: `DispatchQueue` to use for dispatching calls to the delegate.
 
-### `init(appId:language:prepareOnInit:sluClient:identityClient:cache:audioRecorder:delegateDispatchQueue:)`
+### `init(appId:projectId:prepareOnInit:sluClient:identityClient:cache:audioRecorder:delegateDispatchQueue:)`
 
 Creates a new `SpeechClient`.
 
 ``` swift
-public init(appId: UUID, language: LanguageCode, prepareOnInit: Bool, sluClient: SluClientProtocol, identityClient: IdentityClientProtocol, cache: CacheProtocol, audioRecorder: AudioRecorderProtocol, delegateDispatchQueue: DispatchQueue) throws
+public init(appId: UUID? = nil, projectId: UUID? = nil, prepareOnInit: Bool, sluClient: SluClientProtocol, identityClient: IdentityClientProtocol, cache: CacheProtocol, audioRecorder: AudioRecorderProtocol, delegateDispatchQueue: DispatchQueue) throws
 ```
 
 #### Parameters
 
-  - appId: Speechly application identifier.
-  - language: Speechly application language.
+  - appId: Speechly application identifier. Eiither appId or projectId is needed.
+  - projectId: Speechly projectt identifier. Eiither appId or projectId is needed.
   - prepareOnInit: Whether the client should prepare on initialisation. Preparing means initialising the audio stack and fetching the authentication token for the API.
   - sluClient: An implementation of a client for Speechly SLU API.
   - identityClient: An implementation of a client for Speechly Identity API.
@@ -158,10 +148,10 @@ public func sluClientDidReceiveIntent(_ sluClient: SluClientProtocol, contextId:
 public func sluClientDidReceiveSegmentEnd(_ sluClient: SluClientProtocol, contextId: String, segmentId: Int)
 ```
 
-### `start()`
+### `start(appId:)`
 
 ``` swift
-public func start()
+public func start(appId: String? = nil)
 ```
 
 ### `stop()`

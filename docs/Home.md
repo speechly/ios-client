@@ -15,6 +15,8 @@
   - [ApiAccessToken.AuthScope](ApiAccessToken_AuthScope):
     Token authorisation scopes.
     They determine which services can be accessed with this token.
+  - [ApiAccessToken.TokenType](ApiAccessToken_TokenType):
+    Type of token, determines the possible Speechly Apps that are accessible.
   - [CachingIdentityClient](CachingIdentityClient):
     A client for Speechly Identity gRPC API which provides token caching functionality.
   - [IdentityClient](IdentityClient):
@@ -27,10 +29,10 @@
   - [SluConfig](SluConfig):
     SLU stream configuration describes the audio data sent to the stream.
     If misconfigured, the recognition stream will not produce any useful results.
-  - [SluConfig.LanguageCode](SluConfig_LanguageCode):
-    Language codes for supported audio languages.
   - [SpeechClient](SpeechClient):
     A client that implements `SpeechClientProtocol` on top of Speechly SLU API and an audio recorder.
+  - [SpeechClient.SpeechlyClientInitError](SpeechClient_SpeechlyClientInitError):
+    Represents different error situations when initializing the SpeechlyClient.
   - [SpeechClientError](SpeechClientError):
     Errors caught by `SpeechClientProtocol` and dispatched to `SpeechClientDelegate`.
   - [SpeechContext](SpeechContext):

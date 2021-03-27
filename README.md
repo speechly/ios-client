@@ -28,7 +28,7 @@ import PackageDescription
 let package = Package(
     name: "MySpeechlyApp",
     dependencies: [
-        .package(name: "speechly-ios-client", url: "https://github.com/speechly/ios-client.git", from: "0.1.0"),
+        .package(name: "speechly-ios-client", url: "https://github.com/speechly/ios-client.git", from: "0.3.0"),
     ],
     targets: [
         .target(
@@ -62,9 +62,8 @@ class SpeechlyManager {
         client = try! SpeechClient(
             // Specify your Speechly application's identifier here.
             appId: UUID(uuidString: "your-speechly-app-id")!,
-
-            // Specify your Speechly application's language here.
-            language: .enUS
+            // or, if you want to use the project based login, set projectId.
+            //projectId: UUID(uuidString: "your-speechly-project-id")!,
         )
 
         client.delegate = self

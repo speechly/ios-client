@@ -19,13 +19,13 @@ public class IdentityClient {
     ///     - loopGroup: `NIO.EventLoopGroup` to use for the client.
     public convenience init(addr: String, loopGroup: EventLoopGroup) throws {
         let channel = try makeChannel(addr: addr, group: loopGroup)
-        let client = Speechly_Identity_V1_IdentityClient(channel: channel)
+        let client = Speechly_Identity_V2_IdentityAPIClient(channel: channel)
 
         self.init(group: loopGroup, client: client)
     }
 
     /// Alias for Speechly Identity client protocol.
-    public typealias IdentityApiClient = Speechly_Identity_V1_IdentityClientProtocol
+    public typealias IdentityApiClient = Speechly_Identity_V2_IdentityAPIClientProtocol
 
     /// Creates a new client.
     ///
@@ -65,7 +65,7 @@ extension IdentityClient: Promisable {
 // MARK: - IdentityClientProtocol conformance.
 
 extension IdentityClient: IdentityClientProtocol {
-    typealias IdentityLoginRequest = Speechly_Identity_V1_LoginRequest
+    typealias IdentityLoginRequest = Speechly_Identity_V2_LoginRequest
 
     /// Errors returned by the client.
     public enum IdentityClientError: Error {
@@ -75,7 +75,22 @@ extension IdentityClient: IdentityClientProtocol {
 
     public func authenticate(appId: UUID, deviceId: UUID) -> EventLoopFuture<ApiAccessToken> {
         let request = IdentityLoginRequest.with {
-            $0.appID = appId.uuidString.lowercased()
+            $0.application.appID = appId.uuidString.lowercased()
+            $0.deviceID = deviceId.uuidString.lowercased()
+        }
+
+        return self.client.login(request).response.flatMapThrowing { response throws in
+            guard let token = ApiAccessToken(tokenString: response.token) else {
+                throw IdentityClientError.invalidTokenPayload
+            }
+
+            return token
+        }
+    }
+
+    public func authenticateProject(projectId: UUID, deviceId: UUID) -> EventLoopFuture<ApiAccessToken> {
+        let request = IdentityLoginRequest.with {
+            $0.project.projectID = projectId.uuidString.lowercased()
             $0.deviceID = deviceId.uuidString.lowercased()
         }
 

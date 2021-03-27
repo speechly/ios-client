@@ -19,7 +19,7 @@ Exposes functionality for authenticating identifiers in exchange for API access 
 Alias for Speechly Identity client protocol.
 
 ``` swift
-public typealias IdentityApiClient = Speechly_Identity_V1_IdentityClientProtocol
+public typealias IdentityApiClient = Speechly_Identity_V2_IdentityAPIClientProtocol
 ```
 
 ## Initializers
@@ -68,4 +68,10 @@ public func makeSucceededFuture<AuthToken>(_ value: AuthToken) -> EventLoopFutur
 
 ``` swift
 public func authenticate(appId: UUID, deviceId: UUID) -> EventLoopFuture<ApiAccessToken>
+```
+
+### `authenticateProject(projectId:deviceId:)`
+
+``` swift
+public func authenticateProject(projectId: UUID, deviceId: UUID) -> EventLoopFuture<ApiAccessToken>
 ```
