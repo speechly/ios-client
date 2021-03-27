@@ -3,15 +3,22 @@ import AVFoundation
 import UIKit
 import SnapKit
 
+public protocol SpeechButtonDelegate: NSObjectProtocol {
+    
+    func clientForSpeechButton(_ button: SpeechButton) -> SpeechClient?
+    
+    optional func speechButtonImageForAuthorizationStatus(_ button: SpeechButton, status: AVAuthorizationStatus) -> UIImage?
+}
+
 public class SpeechButton: UIView {
     
     private let diameter: CGFloat
     
-    private let clientProvider: () -> SpeechClient?
+    weak var delegate: SpeechButtonDelegate?
     
-    public init(diameter: CGFloat = 80, clientProvider: @escaping () -> SpeechClient?) {
+    public init(diameter: CGFloat = 80, delegate: SpeechButtonDelegate) {
         self.diameter = diameter
-        self.clientProvider = clientProvider
+        self.delegate = delegate
         
         super.init(frame: .zero)
         
@@ -107,6 +114,10 @@ public class SpeechButton: UIView {
         return diameter / borderView.intrinsicContentSize.width
     }
     
+    private var client: SpeechClient? {
+        return delegate?.clientForSpeechButton(self)
+    }
+    
     public private(set) var isPressed: Bool = false {
         didSet {
             var scale = normalScale * (isPressed ? pressedScale : 1)
@@ -115,7 +126,7 @@ public class SpeechButton: UIView {
             blurEffectView.alpha = isPressed ? 1 : 0
             
             if audioAuthorizationStatus == .authorized,
-               let client = clientProvider(),
+               let client = client,
                isPressed != oldValue {
                 
                 if isPressed {
@@ -156,7 +167,7 @@ public class SpeechButton: UIView {
             }
             
         case .notDetermined:
-            _ = clientProvider()
+            _ = client
             
         case .denied, .restricted:
             let settingsURL = URL(string: UIApplication.openSettingsURLString)!
@@ -194,6 +205,10 @@ public class SpeechButton: UIView {
     }
     
     private func reloadAuthorizationStatus() {
+        if let image = delegate?.speechButtonImageForAuthorizationStatus?(self, status: audioAuthorizationStatus) {
+            return image
+        }
+        
         switch audioAuthorizationStatus {
         case .authorized:
             iconView.image = image(named: "mic")
