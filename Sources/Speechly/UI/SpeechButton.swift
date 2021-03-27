@@ -77,13 +77,13 @@ public class SpeechButton: UIView {
         speechBubbleView.hide(animated: false)
         
         func initializeState() {
-            isPressed = false
-            
             borderImage = image(named: "mic-button-frame")
             
             blurEffectImage = image(named: "mic-button-fx")
             
             holdToTalkText = "Hold to talk"
+            
+            isPressed = false
         }
         
         initializeState()
@@ -127,7 +127,7 @@ public class SpeechButton: UIView {
     
     public private(set) var isPressed: Bool = false {
         didSet {
-            var scale = normalScale * (isPressed ? pressedScale : 1)
+            let scale = normalScale * (isPressed ? pressedScale : 1)
             
             contentView.transform = CGAffineTransform(scaleX: scale, y: scale)
             blurEffectView.alpha = isPressed ? 1 : 0
