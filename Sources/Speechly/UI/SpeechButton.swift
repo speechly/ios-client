@@ -65,6 +65,10 @@ public class SpeechButton: UIView {
         func initializeState() {
             isPressed = false
             
+            borderImage = image(named: "mic-button-frame")
+            
+            blurEffectImage = image(named: "mic-button-fx")
+            
             holdToTalkText = "Hold to talk"
         }
         
@@ -77,6 +81,18 @@ public class SpeechButton: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    public var borderImage: UIImage? {
+        didSet {
+            borderView.image = borderImage
+        }
+    }
+    
+    public var blurEffectImage: UIImage? {
+        didSet {
+            blurEffectView.image = blurEffectImage
+        }
     }
     
     public var holdToTalkText: String! {
@@ -119,9 +135,9 @@ public class SpeechButton: UIView {
     
     private let iconView = UIImageView()
     
-    private lazy var borderView = UIImageView(image: self.image(named: "mic-button-frame"))
+    private let borderView = UIImageView()
     
-    private lazy var blurEffectView = UIImageView(image: self.image(named: "mic-button-fx"))
+    private let blurEffectView = UIImageView()
     
     private let speechBubbleView = SpeechBubbleView()
     
