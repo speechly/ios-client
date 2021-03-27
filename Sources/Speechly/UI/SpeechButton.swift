@@ -213,18 +213,18 @@ public class SpeechButton: UIView {
     
     private func reloadAuthorizationStatus() {
         if let image = delegate?.speechButtonImageForAuthorizationStatus(self, status: audioAuthorizationStatus) {
-            return image
-        }
-        
-        switch audioAuthorizationStatus {
-        case .authorized:
-            iconView.image = image(named: "mic")
-        case .notDetermined:
-            iconView.image = image(named: "power-on")
-        case .denied, .restricted:
-            iconView.image = image(named: "mic-no-permission")
-        @unknown default:
-            break
+            iconView.image = image
+        } else {
+            switch audioAuthorizationStatus {
+            case .authorized:
+                iconView.image = image(named: "mic")
+            case .notDetermined:
+                iconView.image = image(named: "power-on")
+            case .denied, .restricted:
+                iconView.image = image(named: "mic-no-permission")
+            @unknown default:
+                break
+            }
         }
     }
     
