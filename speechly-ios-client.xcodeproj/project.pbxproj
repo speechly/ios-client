@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		483C1B8B260EAA1E009ECEEE /* SpeechlyUI.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 483C1B8A260EAA1E009ECEEE /* SpeechlyUI.xcassets */; };
+		483C1BDE260F4A3D009ECEEE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 483C1BDD260F4A3D009ECEEE /* Images.xcassets */; };
 		48AA45A925C9E4310021B9DA /* SpeechButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48AA45A825C9E42C0021B9DA /* SpeechButton.swift */; };
 		48F053E825CB596D00F362E9 /* SpeechBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48F053E725CB596D00F362E9 /* SpeechBubbleView.swift */; };
 		48F0556A25CDEF6600F362E9 /* SpeechTranscriptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48F0556925CDEF6600F362E9 /* SpeechTranscriptView.swift */; };
@@ -51,7 +51,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		483C1B8A260EAA1E009ECEEE /* SpeechlyUI.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SpeechlyUI.xcassets; sourceTree = "<group>"; };
+		483C1BDD260F4A3D009ECEEE /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		48AA45A825C9E42C0021B9DA /* SpeechButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechButton.swift; sourceTree = "<group>"; };
 		48F053E725CB596D00F362E9 /* SpeechBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechBubbleView.swift; sourceTree = "<group>"; };
 		48F0556925CDEF6600F362E9 /* SpeechTranscriptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechTranscriptView.swift; sourceTree = "<group>"; };
@@ -1008,10 +1008,10 @@
 		48D0A23825C9E2E1002711E1 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				483C1BDD260F4A3D009ECEEE /* Images.xcassets */,
 				48AA45A825C9E42C0021B9DA /* SpeechButton.swift */,
 				48F053E725CB596D00F362E9 /* SpeechBubbleView.swift */,
 				48F0556925CDEF6600F362E9 /* SpeechTranscriptView.swift */,
-				483C1B8A260EAA1E009ECEEE /* SpeechlyUI.xcassets */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -3231,7 +3231,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				483C1B8B260EAA1E009ECEEE /* SpeechlyUI.xcassets in Resources */,
+				483C1BDE260F4A3D009ECEEE /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
