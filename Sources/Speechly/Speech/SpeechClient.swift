@@ -13,10 +13,9 @@ import NIO
 ///
 /// The client is ready to use once initialised.
 public class SpeechClient {
-    public let appId: UUID?
-    public let projectId: UUID?
-    public let appConfig: SluConfig
-    
+    private let appId: UUID?
+    private let projectId: UUID?
+    private let appConfig: SluConfig
     private let cache: CacheProtocol
     private let identityClient: IdentityClientProtocol
     private var sluClient: SluClientProtocol
