@@ -138,8 +138,7 @@ class ViewController: UIViewController, SpeechClientDelegate, SpeechButtonDelega
     
     init() {
         client = try! SpeechClient(
-            appId: UUID(uuidString: "your-speechly-app-id")!,
-            language: .enUS
+            appId: UUID(uuidString: "your-speechly-app-id")!
         )
         
         client.delegate = self
