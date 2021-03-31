@@ -10,7 +10,8 @@ let package = Package(
     products: [
         .library(
             name: "Speechly",
-            targets: ["Speechly"]),
+            targets: ["Speechly"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.0.0"),
@@ -26,9 +27,12 @@ let package = Package(
                 .product(name: "GRPC", package: "grpc-swift"),
                 .product(name: "SnapKit", package: "SnapKit"),
                 .product(name: "SpeechlyAPI", package: "speechly-api"),
-            ]),
+            ],
+            resources: [.process("Resources")]
+        ),
         .testTarget(
             name: "SpeechlyTests",
-            dependencies: ["Speechly"]),
+            dependencies: ["Speechly"]
+        ),
     ]
 )

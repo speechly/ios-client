@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		483C1BDE260F4A3D009ECEEE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 483C1BDD260F4A3D009ECEEE /* Images.xcassets */; };
+		4808C660261453D400E8E59F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4808C65F261453D300E8E59F /* Images.xcassets */; };
 		48AA45A925C9E4310021B9DA /* SpeechButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48AA45A825C9E42C0021B9DA /* SpeechButton.swift */; };
 		48F053E825CB596D00F362E9 /* SpeechBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48F053E725CB596D00F362E9 /* SpeechBubbleView.swift */; };
 		48F0556A25CDEF6600F362E9 /* SpeechTranscriptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48F0556925CDEF6600F362E9 /* SpeechTranscriptView.swift */; };
@@ -51,7 +51,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		483C1BDD260F4A3D009ECEEE /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		4808C65F261453D300E8E59F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		48AA45A825C9E42C0021B9DA /* SpeechButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechButton.swift; sourceTree = "<group>"; };
 		48F053E725CB596D00F362E9 /* SpeechBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechBubbleView.swift; sourceTree = "<group>"; };
 		48F0556925CDEF6600F362E9 /* SpeechTranscriptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechTranscriptView.swift; sourceTree = "<group>"; };
@@ -1005,10 +1005,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4808C65E261453D300E8E59F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				4808C65F261453D300E8E59F /* Images.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		48D0A23825C9E2E1002711E1 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				483C1BDD260F4A3D009ECEEE /* Images.xcassets */,
 				48AA45A825C9E42C0021B9DA /* SpeechButton.swift */,
 				48F053E725CB596D00F362E9 /* SpeechBubbleView.swift */,
 				48F0556925CDEF6600F362E9 /* SpeechTranscriptView.swift */,
@@ -2713,6 +2720,7 @@
 				F53C0A6D25472B6400200CE8 /* SLU */,
 				F53C0A6C25472B4A00200CE8 /* Identity */,
 				48D0A23825C9E2E1002711E1 /* UI */,
+				4808C65E261453D300E8E59F /* Resources */,
 			);
 			name = Speechly;
 			path = Sources/Speechly;
@@ -3232,7 +3240,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				483C1BDE260F4A3D009ECEEE /* Images.xcassets in Resources */,
+				4808C660261453D400E8E59F /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
