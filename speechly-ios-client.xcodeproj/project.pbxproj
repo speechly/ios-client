@@ -11,6 +11,7 @@
 		48AA45A925C9E4310021B9DA /* SpeechButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48AA45A825C9E42C0021B9DA /* SpeechButton.swift */; };
 		48F053E825CB596D00F362E9 /* SpeechBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48F053E725CB596D00F362E9 /* SpeechBubbleView.swift */; };
 		48F0556A25CDEF6600F362E9 /* SpeechTranscriptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48F0556925CDEF6600F362E9 /* SpeechTranscriptView.swift */; };
+		8B5FEFBC2613534C00FDD5C9 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 8B5FEFBB2613534C00FDD5C9 /* SnapKit */; };
 		F5183C062550529B0044C990 /* UserDefaultsCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = F541DA77255051CA00ABAB98 /* UserDefaultsCache.swift */; };
 		F53C0A772548055700200CE8 /* CacheProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53C0A762548055700200CE8 /* CacheProtocol.swift */; };
 		F54DE9AC254FF2B4006B08EF /* IdentityClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54DE9AB254FF2B4006B08EF /* IdentityClient.swift */; };
@@ -997,6 +998,7 @@
 			buildActionMask = 0;
 			files = (
 				F5C7FC0C2542B89600F34177 /* SpeechlyAPI in Frameworks */,
+				8B5FEFBC2613534C00FDD5C9 /* SnapKit in Frameworks */,
 				F56C96282540691A0058CE1B /* NIO in Frameworks */,
 				F56C962C254069340058CE1B /* GRPC in Frameworks */,
 			);
@@ -3183,6 +3185,7 @@
 				F56C96272540691A0058CE1B /* NIO */,
 				F56C962B254069340058CE1B /* GRPC */,
 				F5C7FC0B2542B89600F34177 /* SpeechlyAPI */,
+				8B5FEFBB2613534C00FDD5C9 /* SnapKit */,
 			);
 			productName = Speechly;
 			productReference = "speechly-ios-client::Speechly::Product" /* Speechly.framework */;
@@ -3216,6 +3219,7 @@
 				F56C96262540691A0058CE1B /* XCRemoteSwiftPackageReference "swift-nio" */,
 				F56C962A254069340058CE1B /* XCRemoteSwiftPackageReference "grpc-swift" */,
 				F5C7FC0A2542B89600F34177 /* XCRemoteSwiftPackageReference "api" */,
+				8B5FEFBA2613534C00FDD5C9 /* XCRemoteSwiftPackageReference "SnapKit" */,
 			);
 			productRefGroup = OBJ_1040 /* Products */;
 			projectDirPath = "";
@@ -3650,6 +3654,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		8B5FEFBA2613534C00FDD5C9 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.1;
+			};
+		};
 		F56C96262540691A0058CE1B /* XCRemoteSwiftPackageReference "swift-nio" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-nio.git";
@@ -3677,6 +3689,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		8B5FEFBB2613534C00FDD5C9 /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8B5FEFBA2613534C00FDD5C9 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
 		F56C96272540691A0058CE1B /* NIO */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F56C96262540691A0058CE1B /* XCRemoteSwiftPackageReference "swift-nio" */;
