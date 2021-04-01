@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "speechly-ios-client",
     platforms: [
-        .iOS(.v12),
+        .iOS(.v12)
     ],
     products: [
         .library(

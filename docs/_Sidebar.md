@@ -13,6 +13,8 @@
   - [IdentityClient.IdentityClientError](IdentityClient.IdentityClientError)
   - [SluClient](SluClient)
   - [SluConfig](SluConfig)
+  - [SpeechBubbleView](SpeechBubbleView)
+  - [SpeechButton](SpeechButton)
   - [SpeechClient](SpeechClient)
   - [SpeechClient.SpeechlyClientInitError](SpeechClient.SpeechlyClientInitError)
   - [SpeechClientError](SpeechClientError)
@@ -22,6 +24,7 @@
   - [SpeechIntent](SpeechIntent)
   - [SpeechSegment](SpeechSegment)
   - [SpeechTranscript](SpeechTranscript)
+  - [SpeechTranscriptView](SpeechTranscriptView)
   - [UserDefaultsCache](UserDefaultsCache)
 
 </details>
@@ -36,6 +39,7 @@
   - [Promisable](Promisable)
   - [SluClientDelegate](SluClientDelegate)
   - [SluClientProtocol](SluClientProtocol)
+  - [SpeechButtonDelegate](SpeechButtonDelegate)
   - [SpeechClientDelegate](SpeechClientDelegate)
   - [SpeechClientProtocol](SpeechClientProtocol)
 
