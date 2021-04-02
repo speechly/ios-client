@@ -1,30 +1,21 @@
 # Common vars
 SWIFT      := swift
-XCODE      := xcodebuild
+XCODE	   := xcodebuild
 BUILDPATH  := ./.build
 DOCSPATH   := ./docs
-
-# Deps vars
-PACKAGE := Package.swift
-DEPS    := $(BUILDPATH)/checkouts/
 
 # Build vars
 SOURCES          := $(shell find ./Sources -name '*.swift')
 ARCHPATH         := $(BUILDPATH)/artifacts
-BUILDDESTINATION ?= generic/platform=iOS
-BUILDFLAGS       := -sdk iphoneos -destination '$(BUILDDESTINATION)'
-BUILDSCHEME      := Speechly
+BUILDFLAGS       := -scheme speechly-ios-client -sdk iphoneos -destination 'generic/platform=iOS'
 
 # Test vars
 TESTSOURCES     := $(shell find ./Tests -name '*.swift')
-TESTDESTINATION ?= platform=iOS Simulator,name=iPhone 8
-TESTFLAGS       := -destination '$(TESTDESTINATION)'
-TESTSCHEME      := SpeechlyTests
+TESTFLAGS       := -scheme speechly-ios-client -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12'
 
 # Build state vars
-TESTBUILD    := $(ARCHPATH)/.test
-DEBUGBUILD   := $(ARCHPATH)/.debug
-RELEASEBUILD := $(ARCHPATH)/.release
+DEBUGBUILD   := $(ARCHPATH)/debug.xcarchive
+RELEASEBUILD := $(ARCHPATH)/release.xcarchive
 
 # Common
 
@@ -32,10 +23,12 @@ RELEASEBUILD := $(ARCHPATH)/.release
 all: deps test release docs
 
 .PHONY:
-deps: $(DEPS)
+deps: Package.swift
+	$(SWIFT) package resolve
 
 .PHONY:
-test: $(TESTBUILD)
+test:
+	$(XCODE) test $(TESTFLAGS)
 
 .PHONY:
 debug: $(DEBUGBUILD)
@@ -45,31 +38,15 @@ release: $(RELEASEBUILD)
 
 .PHONY:
 clean:
-	$(SWIFT) package clean
+	@$(SWIFT) package clean
 	@rm -rf $(BUILDPATH)
 	@rm -rf $(DOCSPATH)
 
 $(DOCSPATH): $(SOURCES)
 	$(SWIFT) doc generate ./Sources/ --module-name Speechly --output $(DOCSPATH) --base-url ""
 
-# Tests
+$(RELEASEBUILD): $(SOURCES) Package.swift
+	$(XCODE) archive $(BUILDFLAGS) -archivePath "$(ARCHPATH)/release" -configuration Release
 
-$(TESTBUILD): $(SOURCES) $(TESTSOURCES) $(DEPS)
-	$(XCODE) test $(TESTFLAGS) -scheme $(TESTSCHEME)
-	@touch $@
-
-# Builds
-
-$(RELEASEBUILD): $(SOURCES) $(DEPS)
-	$(XCODE) archive $(BUILDFLAGS) -archivePath "$(ARCHPATH)/release" -scheme $(BUILDSCHEME) -configuration Release
-	@touch $@
-
-$(DEBUGBUILD): $(SOURCES) $(DEPS)
-	$(XCODE) archive $(BUILDFLAGS) -archivePath "$(ARCHPATH)/debug" -scheme $(BUILDSCHEME) -configuration Debug
-	@touch $@
-
-# Dependencies
-
-$(DEPS): $(PACKAGE)
-	$(SWIFT) package resolve
-	@touch $@
+$(DEBUGBUILD): $(SOURCES) Package.swift
+	$(XCODE) archive $(BUILDFLAGS) -archivePath "$(ARCHPATH)/debug" -configuration Debug

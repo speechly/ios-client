@@ -49,6 +49,9 @@
     A segment is a part of a recognition context (or a phrase) which is defined by an intent.
   - [SpeechTranscript](SpeechTranscript):
     A speech transcript.
+  - [SpeechBubbleView](SpeechBubbleView)
+  - [SpeechButton](SpeechButton)
+  - [SpeechTranscriptView](SpeechTranscriptView)
 
 # Protocols
 
@@ -71,6 +74,7 @@
     A speech client protocol.
   - [SpeechClientDelegate](SpeechClientDelegate):
     Delegate called when a speech client handles messages from the API or catches an error.
+  - [SpeechButtonDelegate](SpeechButtonDelegate)
 
 # Global Functions
 

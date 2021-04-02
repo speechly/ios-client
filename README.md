@@ -59,26 +59,26 @@ class SpeechlyManager {
     let client: SpeechClient
 
     public init() {
-        self.client = try! SpeechClient(
+        client = try! SpeechClient(
             // Specify your Speechly application's identifier here.
             appId: UUID(uuidString: "your-speechly-app-id")!,
             // or, if you want to use the project based login, set projectId.
             //projectId: UUID(uuidString: "your-speechly-project-id")!,
         )
 
-        self.client.delegate = self
+        client.delegate = self
     }
 
     public func start() {
         // Use this to unmute the microphone and start recognising user's voice input.
         // You can call this when e.g. a button is pressed.
-        self.client.start()
+        client.start()
     }
 
     public func stop() {
         // Use this to mute the microphone and stop recognising user's voice input.
         // You can call this when e.g. a button is depressed.
-        self.client.stop()
+        client.stop()
     }
 }
 
@@ -112,6 +112,80 @@ extension SpeechlyManager: SpeechClientDelegate {
 ```
 
 Check out the [ios-repo-filtering](https://github.com/speechly/ios-repo-filtering) repository for a demo app built using this client.
+
+### User interface components
+
+The client library also includes a couple of ready-made UI components which can be used together with `SpeechClient`.
+
+`SpeechButton` starts and stops voice recognition automatically when pressed and released, using build-in icons and visual effects which you can replace with your own if needed.
+
+`SpeechTranscriptView` visualizes the transcripts received in the `speechlyClientDidUpdateSegment` callback, automatically highlighting recognized entities.
+
+These can be used, for example, in the following way:
+
+```swift
+import UIKit
+import SnapKit
+import Speechly
+
+class ViewController: UIViewController, SpeechClientDelegate, SpeechButtonDelegate {
+    
+    private let client: SpeechClient
+    
+    private lazy var speechButton = SpeechButton(delegate: self)
+    
+    private let transcriptView = SpeechTranscriptView()
+    
+    init() {
+        client = try! SpeechClient(
+            appId: UUID(uuidString: "your-speechly-app-id")!
+        )
+        
+        client.delegate = self
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.backgroundColor = UIColor.white
+        
+        speechButton.holdToTalkText = "Hold to talk"
+        speechButton.pressedScale = 1.5
+        
+        transcriptView.autohideInterval = 3
+        
+        view.addSubview(transcriptView)
+        view.addSubview(speechButton)
+        
+        transcriptView.snp.makeConstraints { (make) in
+            make.top.left.equalTo(view.safeAreaLayoutGuide).inset(20)
+            make.right.lessThanOrEqualTo(view.safeAreaLayoutGuide).inset(20)
+        }
+        
+        speechButton.snp.makeConstraints { (make) in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(20)
+        }
+    }
+}
+
+extension ViewController: SpeechClientDelegate {
+    
+    func speechlyClientDidUpdateSegment(_ speechlyClient: SpeechClientProtocol, segment: SpeechSegment) {
+        DispatchQueue.main.async {
+            self.transcriptView.configure(segment: segment, animated: true)
+        }
+    }
+}
+
+extension ViewController: SpeechButtonDelegate {
+    
+    func clientForSpeechButton(_ button: SpeechButton) -> SpeechClient? {
+        return client
+    }
+}
+
+```
 
 ## Documentation
 
