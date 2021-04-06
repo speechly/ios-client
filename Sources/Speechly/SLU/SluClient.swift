@@ -3,6 +3,7 @@ import Dispatch
 import GRPC
 import NIO
 import SpeechlyAPI
+import os.log
 
 // MARK: - SLU service definition.
 
@@ -16,9 +17,12 @@ public enum InvalidSLUState: Error {
 /// An SluClientProtocol that is implemented on top of public Speechly SLU gRPC API.
 /// Uses `swift-grpc` for handling gRPC streams and connectivity.
 public class SluClient {
+    
+    typealias DisconnectTimer = DispatchWorkItem
+
     private enum State {
         case idle
-        case connected(SluStream)
+        case connected(DisconnectTimer, SluStream)
         case streaming(SluStream)
     }
 
@@ -65,13 +69,13 @@ public class SluClient {
         do {
             try self.disconnect().wait()
         } catch {
-            print("Error stopping SLU stream:", error)
+            os_log("SLU stream disconnect failed: %@", log: speechly, type: .error, String(describing: error))
         }
 
         do {
             try self.client.channel.close().wait()
         } catch {
-            print("Error closing gRPC channel:", error)
+            os_log("gRPC channel close failed: %@", log: speechly, type: .error, String(describing: error))
         }
     }
 }
@@ -96,20 +100,18 @@ extension SluClient: SluClientProtocol {
     private typealias SluResponseProto = Speechly_Slu_V1_SLUResponse
 
     public func connect(token: ApiAccessToken, config: SluConfig) -> EventLoopFuture<Void> {
-        print("sluClient.connect, state: \(self.state)")
         switch self.state {
-        case .streaming, .connected(_):
+        case .streaming, .connected(_, _):
             return self.group.next().makeSucceededVoidFuture()
         case .idle:
             return self.makeStream(token: token, config: config)
-                .map { stream in
-                    self.state = .connected(stream)
+                .map { (timer, stream) in
+                    self.state = .connected(timer, stream)
                 }
         }
     }
     
     public func disconnect() -> EventLoopFuture<Void> {
-        print("sluClient.disconnect, state: \(self.state)")
         switch self.state {
         case .streaming(let stream):
             return self.stopContext()
@@ -117,9 +119,10 @@ extension SluClient: SluClientProtocol {
                 .map { _ in
                     return
                 }
-        case .connected(let stream):
+        case .connected(let timer, let stream):
             return self.stopStream(stream: stream)
                 .map { _ in
+                    timer.cancel()
                     return
                 }
         case .idle:
@@ -128,14 +131,13 @@ extension SluClient: SluClientProtocol {
     }
     
     public func startContext(appId: String? = nil) -> EventLoopFuture<Void> {
-        print("sluClient.startContext, state: \(self.state)")
         switch self.state {
         case .idle:
             return self.group.next().makeFailedFuture(InvalidSLUState.notConnected)
         case .streaming(_):
-            print("returning aan error, sttreaming!")
             return self.group.next().makeFailedFuture(InvalidSLUState.contextAlreadyStarted)
-        case let .connected(stream):
+        case let .connected(timer, stream):
+            timer.cancel()
             return stream.sendMessage(SluRequestProto.with {
                 $0.event = SluEventProto.with {
                     $0.event = .start
@@ -149,11 +151,10 @@ extension SluClient: SluClientProtocol {
     }
 
     public func stopContext() -> EventLoopFuture<Void> {
-        print("sluClient.stopContext, state: \(self.state)")
         switch self.state {
         case .idle:
             return self.group.next().makeFailedFuture(InvalidSLUState.notConnected)
-        case .connected(_):
+        case .connected(_, _):
             return self.group.next().makeFailedFuture(InvalidSLUState.contextNotStarted)
         case let .streaming(stream):
             return stream
@@ -163,7 +164,7 @@ extension SluClient: SluClientProtocol {
                     }
                 })
                 .map {
-                    self.state = .connected(stream)
+                    self.state = .connected(self.makeDisconnectTimer(), stream)
                 }
         }
     }
@@ -181,7 +182,7 @@ extension SluClient: SluClientProtocol {
         switch self.state {
         case .idle:
             return self.group.next().makeFailedFuture(InvalidSLUState.notConnected)
-        case .connected(_):
+        case .connected(_, _):
             return self.group.next().makeFailedFuture(InvalidSLUState.contextNotStarted)
         case let .streaming(stream):
             return stream
@@ -194,7 +195,8 @@ extension SluClient: SluClientProtocol {
     private typealias SluConfigProto = Speechly_Slu_V1_SLUConfig
     private typealias SluEventProto = Speechly_Slu_V1_SLUEvent
 
-    private func makeStream(token: ApiAccessToken, config: SluConfig) -> EventLoopFuture<SluStream> {
+    private func makeStream(token: ApiAccessToken, config: SluConfig) -> EventLoopFuture<(DisconnectTimer, SluStream)> {
+        os_log("Connecting to SLU API", log: speechly, type: .debug)
         let callOptions = makeTokenCallOptions(token: token.tokenString)
 
         let stream = self.client.stream(
@@ -225,11 +227,24 @@ extension SluClient: SluClientProtocol {
                 }
             })
             .map {
-                return stream
+                return (self.makeDisconnectTimer(), stream)
             }
     }
 
+    private func makeDisconnectTimer() -> DisconnectTimer {
+        let task = DispatchWorkItem {
+            do {
+                try self.disconnect().wait()
+            } catch {
+                os_log("Disconnect stream failed: %@", log: speechly, type: .error, String(describing: error))
+            }
+        }
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 30, execute: task)
+        return task
+    }
+    
     private func stopStream(stream: SluStream) -> EventLoopFuture<GRPCStatus> {
+        os_log("Disconnect SLU stream", log: speechly, type: .debug)
         // Make a promise that's passed to stream.cancel().
         let promise = self.group.next().makePromise(of: Void.self)
 
@@ -240,8 +255,9 @@ extension SluClient: SluClientProtocol {
                 return stream.status
             }
 
+        stream.sendEnd(promise: promise)
         // Cancel the stream.
-        stream.cancel(promise: promise)
+        //stream.cancel(promise: promise)
         return future
     }
 

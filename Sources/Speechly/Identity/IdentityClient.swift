@@ -2,6 +2,7 @@ import Foundation
 import NIO
 import GRPC
 import SpeechlyAPI
+import os.log
 
 // MARK: - IdentityClient definition.
 
@@ -41,7 +42,7 @@ public class IdentityClient {
         do {
             try self.client.channel.close().wait()
         } catch {
-            print("Error closing gRPC channel:", error)
+            os_log("gRPC channel close failed: %@", log: speechly, type: .error, String(describing: error))
         }
     }
 }
@@ -83,6 +84,7 @@ extension IdentityClient: IdentityClientProtocol {
             guard let token = ApiAccessToken(tokenString: response.token) else {
                 throw IdentityClientError.invalidTokenPayload
             }
+            os_log("Login: appId=%@, deviceId=%@", log: speechly, type: .debug, request.application.appID, request.deviceID)
 
             return token
         }
@@ -98,6 +100,7 @@ extension IdentityClient: IdentityClientProtocol {
             guard let token = ApiAccessToken(tokenString: response.token) else {
                 throw IdentityClientError.invalidTokenPayload
             }
+            os_log("Login: projectId=%@, deviceId=%@", log: speechly, type: .debug, request.project.projectID, request.deviceID)
 
             return token
         }

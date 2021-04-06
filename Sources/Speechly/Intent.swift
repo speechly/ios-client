@@ -66,7 +66,7 @@ extension Intent: Comparable {
 
 // MARK: - SluProtoParseable implementation.
 
-extension Intent: SluProtoParseable {
+extension Intent: SpeechlyProtoParseable {
     typealias IntentProto = Speechly_Slu_V1_SLUIntent
 
     static func parseProto(message: IntentProto, isFinal: Bool) -> Intent {

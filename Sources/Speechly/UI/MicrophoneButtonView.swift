@@ -3,27 +3,31 @@ import AVFoundation
 import UIKit
 import SnapKit
 
-public protocol SpeechButtonDelegate: NSObjectProtocol {
+public protocol MicrophoneButtonDelegate {
+    func didOpenMicrophone(_ button: MicrophoneButtonView)
     
-    func clientForSpeechButton(_ button: SpeechButton) -> SpeechClient?
+    func didCloseMicrophone(_ button: MicrophoneButtonView)
     
-    func speechButtonImageForAuthorizationStatus(_ button: SpeechButton, status: AVAuthorizationStatus) -> UIImage?
+    func speechButtonImageForAuthorizationStatus(_ button: MicrophoneButtonView, status: AVAuthorizationStatus) -> UIImage?
 }
 
-public extension SpeechButtonDelegate {
+public extension MicrophoneButtonDelegate {
+    func didOpenMicrophone(_ button: MicrophoneButtonView) {}
     
-    func speechButtonImageForAuthorizationStatus(_ button: SpeechButton, status: AVAuthorizationStatus) -> UIImage? {
+    func didCloseMicrophone(_ button: MicrophoneButtonView) {}
+    
+    func speechButtonImageForAuthorizationStatus(_ button: MicrophoneButtonView, status: AVAuthorizationStatus) -> UIImage? {
         return nil
     }
 }
 
-public class SpeechButton: UIView {
+public class MicrophoneButtonView: UIView {
     
     private let diameter: CGFloat
     
-    weak var delegate: SpeechButtonDelegate?
+    var delegate: MicrophoneButtonDelegate?
     
-    public init(diameter: CGFloat = 80, delegate: SpeechButtonDelegate) {
+    public init(diameter: CGFloat = 80, delegate: MicrophoneButtonDelegate) {
         self.diameter = diameter
         self.delegate = delegate
         
@@ -120,11 +124,7 @@ public class SpeechButton: UIView {
     private var normalScale: CGFloat {
         return diameter / borderView.intrinsicContentSize.width
     }
-    
-    private var client: SpeechClient? {
-        return delegate?.clientForSpeechButton(self)
-    }
-    
+
     public private(set) var isPressed: Bool = false {
         didSet {
             let scale = normalScale * (isPressed ? pressedScale : 1)
@@ -134,11 +134,11 @@ public class SpeechButton: UIView {
             
             if isPressed != oldValue {
                 if audioAuthorizationStatus == .authorized {
-                    if let client = client {
+                    if let delegate = delegate {
                         if isPressed {
-                            client.start()
+                            delegate.didOpenMicrophone(self)
                         } else {
-                            client.stop()
+                            delegate.didCloseMicrophone(self)
                         }
                     }
                 } else {
@@ -179,8 +179,12 @@ public class SpeechButton: UIView {
             }
             
         case .notDetermined:
-            _ = client
-            
+            AVCaptureDevice.requestAccess(for: .audio) { _ in
+                DispatchQueue.main.async {
+                    self.reloadAuthorizationStatus()
+                }
+            }
+
         case .denied, .restricted:
             let settingsURL = URL(string: UIApplication.openSettingsURLString)!
             UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
@@ -216,7 +220,7 @@ public class SpeechButton: UIView {
         return AVCaptureDevice.authorizationStatus(for: .audio)
     }
     
-    private func reloadAuthorizationStatus() {
+    public func reloadAuthorizationStatus() {
         if let image = delegate?.speechButtonImageForAuthorizationStatus(self, status: audioAuthorizationStatus) {
             iconView.image = image
         } else {

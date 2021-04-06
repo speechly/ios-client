@@ -3,6 +3,9 @@ import AVFoundation
 import Dispatch
 import GRPC
 import NIO
+import os.log
+
+let speechly = OSLog(subsystem: "com.speechly.client", category: "speechly")
 
 // MARK: - SpeechClient definition.
 
@@ -22,7 +25,7 @@ public class Client {
     private var audioRecorder: AudioRecorderProtocol
 
     private let delegateQueue: DispatchQueue
-    private weak var delegateVal: SpeechClientDelegate?
+    private weak var delegateVal: SpeechlyDelegate?
 
     private let deviceIdKey = "deviceId"
     private var deviceIdValue: UUID? = nil
@@ -412,9 +415,9 @@ extension Client: SluClientDelegate {
 
 // MARK: - SpeechlyClientProtocol protocol conformance.
 
-extension Client: SpeechClientProtocol {
+extension Client: SpeechlyProtocol {
     
-    public weak var delegate: SpeechClientDelegate? {
+    public weak var delegate: SpeechlyDelegate? {
         get {
             return self.delegateVal
         }
@@ -448,13 +451,13 @@ extension Client: SpeechClientProtocol {
         do {
             try self.audioRecorder.suspend()
         } catch {
-            print("Error suspending audio recorder", error)
+            os_log("Error suspending audio recorder: %@", log: speechly, type: .error, String(describing: error))
         }
 
         do {
             try self.sluClient.suspend().wait()
         } catch {
-            print("Error suspending API client", error)
+            os_log("Error suspending API client: %@", log: speechly, type: .error, String(describing: error))
         }
     }
 

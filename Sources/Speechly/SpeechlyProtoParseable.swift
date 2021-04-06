@@ -5,7 +5,7 @@ import SwiftProtobuf
 ///
 /// Unfortunately there isn't a good way to restrict this protocol to a subset of messages specific to Speechly SLU API,
 /// hence it's using a general `SwiftProtobuf.Message` as a type.
-protocol SluProtoParseable {
+protocol SpeechlyProtoParseable {
     /// The message that can be parsed.
     associatedtype Message = SwiftProtobuf.Message
 

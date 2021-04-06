@@ -74,7 +74,7 @@ extension Transcript: Comparable {
 
 // MARK: - SluProtoParseable implementation.
 
-extension Transcript: SluProtoParseable {
+extension Transcript: SpeechlyProtoParseable {
     typealias TranscriptProto = Speechly_Slu_V1_SLUTranscript
 
     static func parseProto(message: TranscriptProto, isFinal: Bool) -> Transcript {

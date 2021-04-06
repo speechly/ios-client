@@ -113,7 +113,7 @@ extension Entity: Comparable {
 
 // MARK: - SluProtoParseable implementation.
 
-extension Entity: SluProtoParseable {
+extension Entity: SpeechlyProtoParseable {
     typealias EntityProto = Speechly_Slu_V1_SLUEntity
 
     static func parseProto(message: EntityProto, isFinal: Bool) -> Entity {
