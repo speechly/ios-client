@@ -11,11 +11,7 @@ public protocol MicrophoneButtonDelegate {
     func speechButtonImageForAuthorizationStatus(_ button: MicrophoneButtonView, status: AVAuthorizationStatus) -> UIImage?
 }
 
-public extension MicrophoneButtonDelegate {
-    func didOpenMicrophone(_ button: MicrophoneButtonView) {}
-    
-    func didCloseMicrophone(_ button: MicrophoneButtonView) {}
-    
+public extension MicrophoneButtonDelegate {    
     func speechButtonImageForAuthorizationStatus(_ button: MicrophoneButtonView, status: AVAuthorizationStatus) -> UIImage? {
         return nil
     }
