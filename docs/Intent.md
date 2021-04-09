@@ -1,9 +1,9 @@
-# SpeechIntent
+# Intent
 
 A speech intent.
 
 ``` swift
-public struct SpeechIntent: Hashable
+public struct Intent: Hashable
 ```
 
 An intent is part of a phrase which defines the action of the phrase,
@@ -45,7 +45,7 @@ let Empty
 ### `value`
 
 The value of the intent, as defined in Speechly application configuration.
-e.g. in the example "\*book book a [burger restaurant](restaurant_type)" it would be `book`.
+e.g. in the example "\*book book a [burger restaurant](restaurant_type.md)" it would be `book`.
 
 ``` swift
 let value: String
@@ -73,23 +73,23 @@ var id: String
 ### `<(lhs:rhs:)`
 
 ``` swift
-public static func <(lhs: SpeechIntent, rhs: SpeechIntent) -> Bool
+public static func <(lhs: Intent, rhs: Intent) -> Bool
 ```
 
 ### `<=(lhs:rhs:)`
 
 ``` swift
-public static func <=(lhs: SpeechIntent, rhs: SpeechIntent) -> Bool
+public static func <=(lhs: Intent, rhs: Intent) -> Bool
 ```
 
 ### `>=(lhs:rhs:)`
 
 ``` swift
-public static func >=(lhs: SpeechIntent, rhs: SpeechIntent) -> Bool
+public static func >=(lhs: Intent, rhs: Intent) -> Bool
 ```
 
 ### `>(lhs:rhs:)`
 
 ``` swift
-public static func >(lhs: SpeechIntent, rhs: SpeechIntent) -> Bool
+public static func >(lhs: Intent, rhs: Intent) -> Bool
 ```

@@ -10,7 +10,7 @@ The cache is implemented as read-through and transparent for the consumer.
 
 ## Inheritance
 
-[`IdentityClientProtocol`](IdentityClientProtocol)
+[`IdentityClientProtocol`](IdentityClientProtocol.md)
 
 ## Nested Type Aliases
 

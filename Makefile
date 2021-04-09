@@ -44,6 +44,7 @@ clean:
 
 $(DOCSPATH): $(SOURCES)
 	$(SWIFT) doc generate ./Sources/ --module-name Speechly --output $(DOCSPATH) --base-url ""
+	@sed -i.bak -E 's/(\[.+\])\((.+)\)/\1(\2.md)/g' docs/*.md && rm docs/*.md.bak
 
 $(RELEASEBUILD): $(SOURCES) Package.swift
 	$(XCODE) archive $(BUILDFLAGS) -archivePath "$(ARCHPATH)/release" -configuration Release

@@ -1,9 +1,9 @@
-# SpeechClientError
+# SpeechlyError
 
 Errors caught by `SpeechClientProtocol` and dispatched to `SpeechClientDelegate`.
 
 ``` swift
-public enum SpeechClientError
+public enum SpeechlyError
 ```
 
 ## Inheritance

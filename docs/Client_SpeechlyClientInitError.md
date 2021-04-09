@@ -1,4 +1,4 @@
-# SpeechClient.SpeechlyClientInitError
+# Client.SpeechlyClientInitError
 
 Represents different error situations when initializing the SpeechlyClient.
 

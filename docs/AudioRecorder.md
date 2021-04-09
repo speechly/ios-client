@@ -11,7 +11,7 @@ in the required sample rate, channel count and format.
 
 ## Inheritance
 
-[`AudioRecorderProtocol`](AudioRecorderProtocol)
+[`AudioRecorderProtocol`](AudioRecorderProtocol.md)
 
 ## Initializers
 

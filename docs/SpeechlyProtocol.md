@@ -1,9 +1,9 @@
-# SpeechClientProtocol
+# SpeechlyProtocol
 
 A speech client protocol.
 
 ``` swift
-public protocol SpeechClientProtocol
+public protocol SpeechlyProtocol
 ```
 
 The purpose of a speech client is to abstract away the handling of audio recording and API streaming,
@@ -17,15 +17,15 @@ A delegate which is called when the client has received and parsed messages from
 The delegate will also be called when the client catches an error.
 
 ``` swift
-var delegate: SpeechClientDelegate?
+var delegate: SpeechlyDelegate?
 ```
 
-### start(appId:​)
+### startContext(appId:​)
 
 Start a new recognition context and unmute the microphone.
 
 ``` swift
-func start(appId: String?)
+func startContext(appId: String?)
 ```
 
 > 
@@ -34,12 +34,12 @@ func start(appId: String?)
 
   - appId: Define a specific Speechly appId to send the audio to. Not needed if the appId can be inferred from login.
 
-### stop()
+### stopContext()
 
 Stop current recognition context and mute the microphone.
 
 ``` swift
-func stop()
+func stopContext()
 ```
 
 > 

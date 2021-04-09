@@ -1,9 +1,9 @@
-# SpeechClientDelegate
+# SpeechlyDelegate
 
 Delegate called when a speech client handles messages from the API or catches an error.
 
 ``` swift
-public protocol SpeechClientDelegate: class
+public protocol SpeechlyDelegate: class
 ```
 
 The intended use of this protocol is with `SpeechClientProtocol`.
@@ -21,27 +21,27 @@ The intended use of this protocol is with `SpeechClientProtocol`.
 Called when the client catches an error.
 
 ``` swift
-func speechlyClientDidCatchError(_ speechlyClient: SpeechClientProtocol, error: SpeechClientError)
+func speechlyClientDidCatchError(_ speechlyClient: SpeechlyProtocol, error: SpeechlyError)
 ```
 
 #### Parameters
 
   - error: The error which was caught.
 
-### speechlyClientDidStart(\_:​)
+### speechlyClientDidStartContext(\_:​)
 
 Called after the client has acknowledged a recognition context start.
 
 ``` swift
-func speechlyClientDidStart(_ speechlyClient: SpeechClientProtocol)
+func speechlyClientDidStartContext(_ speechlyClient: SpeechlyProtocol)
 ```
 
-### speechlyClientDidStop(\_:​)
+### speechlyClientDidStopContext(\_:​)
 
 Called after the client has acknowledged a recognition context stop.
 
 ``` swift
-func speechlyClientDidStop(_ speechlyClient: SpeechClientProtocol)
+func speechlyClientDidStopContext(_ speechlyClient: SpeechlyProtocol)
 ```
 
 ### speechlyClientDidUpdateSegment(\_:​segment:​)
@@ -49,7 +49,7 @@ func speechlyClientDidStop(_ speechlyClient: SpeechClientProtocol)
 Called after the client has processed an update to current `SpeechSegment`.
 
 ``` swift
-func speechlyClientDidUpdateSegment(_ speechlyClient: SpeechClientProtocol, segment: SpeechSegment)
+func speechlyClientDidUpdateSegment(_ speechlyClient: SpeechlyProtocol, segment: Segment)
 ```
 
 When the client receives messages from the API, it will use them to update the state of current speech segment,
@@ -68,7 +68,7 @@ it is possible to have out-of-order delivery of segments.
 Called after the client has received a new transcript message from the API.
 
 ``` swift
-func speechlyClientDidReceiveTranscript(_ speechlyClient: SpeechClientProtocol, contextId: String, segmentId: Int, transcript: SpeechTranscript)
+func speechlyClientDidReceiveTranscript(_ speechlyClient: SpeechlyProtocol, contextId: String, segmentId: Int, transcript: Transcript)
 ```
 
 #### Parameters
@@ -82,7 +82,7 @@ func speechlyClientDidReceiveTranscript(_ speechlyClient: SpeechClientProtocol, 
 Called after the client has received a new entity message from the API.
 
 ``` swift
-func speechlyClientDidReceiveEntity(_ speechlyClient: SpeechClientProtocol, contextId: String, segmentId: Int, entity: SpeechEntity)
+func speechlyClientDidReceiveEntity(_ speechlyClient: SpeechlyProtocol, contextId: String, segmentId: Int, entity: Entity)
 ```
 
 #### Parameters
@@ -96,7 +96,7 @@ func speechlyClientDidReceiveEntity(_ speechlyClient: SpeechClientProtocol, cont
 Called after the client has received a new intent message from the API.
 
 ``` swift
-func speechlyClientDidReceiveIntent(_ speechlyClient: SpeechClientProtocol, contextId: String, segmentId: Int, intent: SpeechIntent)
+func speechlyClientDidReceiveIntent(_ speechlyClient: SpeechlyProtocol, contextId: String, segmentId: Int, intent: Intent)
 ```
 
 #### Parameters

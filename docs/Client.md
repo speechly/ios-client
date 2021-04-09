@@ -1,9 +1,9 @@
-# SpeechClient
+# Client
 
 A client that implements `SpeechClientProtocol` on top of Speechly SLU API and an audio recorder.
 
 ``` swift
-public class SpeechClient
+public class Client
 ```
 
 The client handles both the audio and the API streams, as well as API authentication,
@@ -13,7 +13,7 @@ The client is ready to use once initialised.
 
 ## Inheritance
 
-[`AudioRecorderDelegate`](AudioRecorderDelegate), [`SluClientDelegate`](SluClientDelegate), [`SpeechClientProtocol`](SpeechClientProtocol)
+[`AudioRecorderDelegate`](AudioRecorderDelegate), [`SluClientDelegate`](SluClientDelegate), [`SpeechlyProtocol`](SpeechlyProtocol.md)
 
 ## Initializers
 
@@ -22,7 +22,7 @@ The client is ready to use once initialised.
 Creates a new `SpeechClient`.
 
 ``` swift
-public convenience init(appId: UUID? = nil, projectId: UUID? = nil, prepareOnInit: Bool = true, identityAddr: String = "grpc+tls://api.speechly.com", sluAddr: String = "grpc+tls://api.speechly.com", eventLoopGroup: EventLoopGroup = PlatformSupport.makeEventLoopGroup(loopCount: 1), delegateDispatchQueue: DispatchQueue = DispatchQueue(label: "com.speechly.iosclient.SpeechClient.delegateQueue")) throws
+public convenience init(appId: UUID? = nil, projectId: UUID? = nil, prepareOnInit: Bool = true, identityAddr: String = "grpc+tls://api.speechly.com", sluAddr: String = "grpc+tls://api.speechly.com", eventLoopGroup: EventLoopGroup = PlatformSupport.makeEventLoopGroup(loopCount: 1), delegateDispatchQueue: DispatchQueue = DispatchQueue(label: "com.speechly.Client.delegateQueue")) throws
 ```
 
 #### Parameters
@@ -59,7 +59,7 @@ public init(appId: UUID? = nil, projectId: UUID? = nil, prepareOnInit: Bool, slu
 ### `delegate`
 
 ``` swift
-var delegate: SpeechClientDelegate?
+var delegate: SpeechlyDelegate?
 ```
 
 ## Methods
@@ -109,37 +109,37 @@ public func sluClientDidReceiveContextStop(_ sluClient: SluClientProtocol, conte
 ### `sluClientDidReceiveTentativeTranscript(_:contextId:segmentId:transcript:)`
 
 ``` swift
-public func sluClientDidReceiveTentativeTranscript(_ sluClient: SluClientProtocol, contextId: String, segmentId: Int, transcript: TentativeTranscript)
+public func sluClientDidReceiveTentativeTranscript(_ sluClient: SluClientProtocol, contextId: String, segmentId: Int, transcript: SluClientDelegate.TentativeTranscript)
 ```
 
 ### `sluClientDidReceiveTentativeEntities(_:contextId:segmentId:entities:)`
 
 ``` swift
-public func sluClientDidReceiveTentativeEntities(_ sluClient: SluClientProtocol, contextId: String, segmentId: Int, entities: TentativeEntities)
+public func sluClientDidReceiveTentativeEntities(_ sluClient: SluClientProtocol, contextId: String, segmentId: Int, entities: SluClientDelegate.TentativeEntities)
 ```
 
 ### `sluClientDidReceiveTentativeIntent(_:contextId:segmentId:intent:)`
 
 ``` swift
-public func sluClientDidReceiveTentativeIntent(_ sluClient: SluClientProtocol, contextId: String, segmentId: Int, intent: TentativeIntent)
+public func sluClientDidReceiveTentativeIntent(_ sluClient: SluClientProtocol, contextId: String, segmentId: Int, intent: SluClientDelegate.TentativeIntent)
 ```
 
 ### `sluClientDidReceiveTranscript(_:contextId:segmentId:transcript:)`
 
 ``` swift
-public func sluClientDidReceiveTranscript(_ sluClient: SluClientProtocol, contextId: String, segmentId: Int, transcript: Transcript)
+public func sluClientDidReceiveTranscript(_ sluClient: SluClientProtocol, contextId: String, segmentId: Int, transcript: SluClientDelegate.Transcript)
 ```
 
 ### `sluClientDidReceiveEntity(_:contextId:segmentId:entity:)`
 
 ``` swift
-public func sluClientDidReceiveEntity(_ sluClient: SluClientProtocol, contextId: String, segmentId: Int, entity: Entity)
+public func sluClientDidReceiveEntity(_ sluClient: SluClientProtocol, contextId: String, segmentId: Int, entity: SluClientDelegate.Entity)
 ```
 
 ### `sluClientDidReceiveIntent(_:contextId:segmentId:intent:)`
 
 ``` swift
-public func sluClientDidReceiveIntent(_ sluClient: SluClientProtocol, contextId: String, segmentId: Int, intent: Intent)
+public func sluClientDidReceiveIntent(_ sluClient: SluClientProtocol, contextId: String, segmentId: Int, intent: SluClientDelegate.Intent)
 ```
 
 ### `sluClientDidReceiveSegmentEnd(_:contextId:segmentId:)`
@@ -148,16 +148,16 @@ public func sluClientDidReceiveIntent(_ sluClient: SluClientProtocol, contextId:
 public func sluClientDidReceiveSegmentEnd(_ sluClient: SluClientProtocol, contextId: String, segmentId: Int)
 ```
 
-### `start(appId:)`
+### `startContext(appId:)`
 
 ``` swift
-public func start(appId: String? = nil)
+public func startContext(appId: String? = nil)
 ```
 
-### `stop()`
+### `stopContext()`
 
 ``` swift
-public func stop()
+public func stopContext()
 ```
 
 ### `suspend()`

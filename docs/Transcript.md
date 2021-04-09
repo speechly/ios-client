@@ -1,9 +1,9 @@
-# SpeechTranscript
+# Transcript
 
 A speech transcript.
 
 ``` swift
-public struct SpeechTranscript: Hashable
+public struct Transcript: Hashable
 ```
 
 A transcript is a single word in a phrase recognised from the audio.
@@ -88,23 +88,23 @@ var id: Int
 ### `<(lhs:rhs:)`
 
 ``` swift
-public static func <(lhs: SpeechTranscript, rhs: SpeechTranscript) -> Bool
+public static func <(lhs: Transcript, rhs: Transcript) -> Bool
 ```
 
 ### `<=(lhs:rhs:)`
 
 ``` swift
-public static func <=(lhs: SpeechTranscript, rhs: SpeechTranscript) -> Bool
+public static func <=(lhs: Transcript, rhs: Transcript) -> Bool
 ```
 
 ### `>=(lhs:rhs:)`
 
 ``` swift
-public static func >=(lhs: SpeechTranscript, rhs: SpeechTranscript) -> Bool
+public static func >=(lhs: Transcript, rhs: Transcript) -> Bool
 ```
 
 ### `>(lhs:rhs:)`
 
 ``` swift
-public static func >(lhs: SpeechTranscript, rhs: SpeechTranscript) -> Bool
+public static func >(lhs: Transcript, rhs: Transcript) -> Bool
 ```
