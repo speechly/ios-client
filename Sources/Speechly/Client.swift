@@ -3,6 +3,9 @@ import AVFoundation
 import Dispatch
 import GRPC
 import NIO
+import os.log
+
+let speechly = OSLog(subsystem: "com.speechly.client", category: "speechly")
 
 // MARK: - SpeechClient definition.
 
@@ -12,7 +15,7 @@ import NIO
 /// caching access tokens and dispatching data to delegate.
 ///
 /// The client is ready to use once initialised.
-public class SpeechClient {
+public class Client {
     private let appId: UUID?
     private let projectId: UUID?
     private let appConfig: SluConfig
@@ -22,7 +25,7 @@ public class SpeechClient {
     private var audioRecorder: AudioRecorderProtocol
 
     private let delegateQueue: DispatchQueue
-    private weak var delegateVal: SpeechClientDelegate?
+    private weak var delegateVal: SpeechlyDelegate?
 
     private let deviceIdKey = "deviceId"
     private var deviceIdValue: UUID? = nil
@@ -59,28 +62,28 @@ public class SpeechClient {
             case alreadyExists, notFound
         }
 
-        var speechContexts: [String:SpeechContext] = [:]
+        var speechContexts: [String:AudioContext] = [:]
 
-        func get(contextId: String) -> SpeechContext? {
+        func get(contextId: String) -> AudioContext? {
             return self.speechContexts[contextId]
         }
 
-        mutating func update(_ context: SpeechContext) {
+        mutating func update(_ context: AudioContext) {
             self.speechContexts[context.id] = context
         }
 
-        mutating func add(contextId: String) throws -> SpeechContext {
+        mutating func add(contextId: String) throws -> AudioContext {
             if self.get(contextId: contextId) != nil {
                 throw ContextError.alreadyExists
             }
 
-            let context = SpeechContext(id: contextId)
+            let context = AudioContext(id: contextId)
             self.speechContexts[contextId] = context
 
             return context
         }
 
-        mutating func remove(contextId: String) throws -> SpeechContext {
+        mutating func remove(contextId: String) throws -> AudioContext {
             guard var context = self.speechContexts.removeValue(forKey: contextId) else {
                 throw ContextError.notFound
             }
@@ -116,7 +119,7 @@ public class SpeechClient {
         identityAddr: String = "grpc+tls://api.speechly.com",
         sluAddr: String = "grpc+tls://api.speechly.com",
         eventLoopGroup: EventLoopGroup = PlatformSupport.makeEventLoopGroup(loopCount: 1),
-        delegateDispatchQueue: DispatchQueue = DispatchQueue(label: "com.speechly.iosclient.SpeechClient.delegateQueue")
+        delegateDispatchQueue: DispatchQueue = DispatchQueue(label: "com.speechly.Client.delegateQueue")
     ) throws {
         if appId == nil && projectId == nil {
             throw SpeechlyClientInitError.keysMissing
@@ -199,10 +202,10 @@ public class SpeechClient {
 
 // MARK: - AudioRecorderDelegate protocol conformance.
 
-extension SpeechClient: AudioRecorderDelegate {
+extension Client: AudioRecorderDelegate {
     public func audioRecorderDidStop(_: AudioRecorderProtocol) {
         self.sluClient
-            .stop()
+            .stopContext()
             .whenFailure { error in
                 self.delegateQueue.async {
                     self.delegate?.speechlyClientDidCatchError(self, error: .apiError(error.localizedDescription))
@@ -214,18 +217,9 @@ extension SpeechClient: AudioRecorderDelegate {
         self.sluClient
             .write(data: audioData)
             .whenComplete { result in
-                switch result {
-                case let .failure(error):
+                if case .failure(let error) = result {
                     self.delegateQueue.async {
                         self.delegate?.speechlyClientDidCatchError(self, error: .apiError(error.localizedDescription))
-                    }
-                case let .success(written):
-                    if !written {
-                        self.delegateQueue.async {
-                            self.delegate?.speechlyClientDidCatchError(
-                                self, error: .apiError("Attempted to send audio to closed SLU stream")
-                            )
-                        }
                     }
                 }
             }
@@ -240,7 +234,7 @@ extension SpeechClient: AudioRecorderDelegate {
 
 // MARK: - SluClientDelegate protocol conformance.
 
-extension SpeechClient: SluClientDelegate {
+extension Client: SluClientDelegate {
     public func sluClientDidCatchError(_ sluClient: SluClientProtocol, error: Error) {
         self.delegateQueue.async {
             self.delegate?.speechlyClientDidCatchError(self, error: .networkError(error.localizedDescription))
@@ -249,7 +243,7 @@ extension SpeechClient: SluClientDelegate {
 
     public func sluClientDidStopStream(_ sluClient: SluClientProtocol, status: GRPCStatus) {
         self.delegateQueue.async {
-            self.delegate?.speechlyClientDidStop(self)
+            self.delegate?.speechlyClientDidStopContext(self)
         }
 
         if !status.isOk {
@@ -281,11 +275,11 @@ extension SpeechClient: SluClientDelegate {
     }
 
     public func sluClientDidReceiveTentativeTranscript(
-        _ sluClient: SluClientProtocol, contextId: String, segmentId: Int, transcript: TentativeTranscript
+        _ sluClient: SluClientProtocol, contextId: String, segmentId: Int, transcript: SluClientDelegate.TentativeTranscript
     ) {
         self.updateContext(contextId, transform: { context in
-            let transcripts = transcript.tentativeWords.map { w -> SpeechTranscript in
-                let t = SpeechTranscript.parseProto(message: w, isFinal: false)
+            let transcripts = transcript.tentativeWords.map { w -> Speechly.Transcript in
+                let t = Speechly.Transcript.parseProto(message: w, isFinal: false)
 
                 self.delegateQueue.async {
                     self.delegate?
@@ -300,11 +294,11 @@ extension SpeechClient: SluClientDelegate {
     }
 
     public func sluClientDidReceiveTentativeEntities(
-        _ sluClient: SluClientProtocol, contextId: String, segmentId: Int, entities: TentativeEntities
+        _ sluClient: SluClientProtocol, contextId: String, segmentId: Int, entities: SluClientDelegate.TentativeEntities
     ) {
         self.updateContext(contextId, transform: { context in
-            let entities = entities.tentativeEntities.map { e -> SpeechEntity in
-                let entity = SpeechEntity.parseProto(message: e, isFinal: false)
+            let entities = entities.tentativeEntities.map { e -> Speechly.Entity in
+                let entity = Speechly.Entity.parseProto(message: e, isFinal: false)
 
                 self.delegateQueue.async {
                     self.delegate?
@@ -319,10 +313,10 @@ extension SpeechClient: SluClientDelegate {
     }
 
     public func sluClientDidReceiveTentativeIntent(
-        _ sluClient: SluClientProtocol, contextId: String, segmentId: Int, intent: TentativeIntent
+        _ sluClient: SluClientProtocol, contextId: String, segmentId: Int, intent: SluClientDelegate.TentativeIntent
     ) {
         self.updateContext(contextId, transform: { context in
-            let intent = SpeechIntent.parseProto(message: intent, isFinal: false)
+            let intent = Speechly.Intent.parseProto(message: intent, isFinal: false)
 
             self.delegateQueue.async {
                 self.delegate?
@@ -334,10 +328,10 @@ extension SpeechClient: SluClientDelegate {
     }
 
     public func sluClientDidReceiveTranscript(
-        _ sluClient: SluClientProtocol, contextId: String, segmentId: Int, transcript: Transcript
+        _ sluClient: SluClientProtocol, contextId: String, segmentId: Int, transcript: SluClientDelegate.Transcript
     ) {
         self.updateContext(contextId, transform: { context in
-            let transcript = SpeechTranscript.parseProto(message: transcript, isFinal: true)
+            let transcript = Speechly.Transcript.parseProto(message: transcript, isFinal: true)
 
             self.delegateQueue.async {
                 self.delegate?
@@ -349,10 +343,10 @@ extension SpeechClient: SluClientDelegate {
     }
 
     public func sluClientDidReceiveEntity(
-        _ sluClient: SluClientProtocol, contextId: String, segmentId: Int, entity: Entity
+        _ sluClient: SluClientProtocol, contextId: String, segmentId: Int, entity: SluClientDelegate.Entity
     ) {
         self.updateContext(contextId, transform: { context in
-            let entity = SpeechEntity.parseProto(message: entity, isFinal: true)
+            let entity = Speechly.Entity.parseProto(message: entity, isFinal: true)
 
             self.delegateQueue.async {
                 self.delegate?
@@ -364,10 +358,10 @@ extension SpeechClient: SluClientDelegate {
     }
 
     public func sluClientDidReceiveIntent(
-        _ sluClient: SluClientProtocol, contextId: String, segmentId: Int, intent: Intent
+        _ sluClient: SluClientProtocol, contextId: String, segmentId: Int, intent: SluClientDelegate.Intent
     ) {
         self.updateContext(contextId, transform: { context in
-            let intent = SpeechIntent.parseProto(message: intent, isFinal: true)
+            let intent = Speechly.Intent.parseProto(message: intent, isFinal: true)
 
             self.delegateQueue.async {
                 self.delegate?
@@ -390,7 +384,7 @@ extension SpeechClient: SluClientDelegate {
     ///
     /// It will dispatch the segment returned by the closure to the delegate.
     /// It will also dispatch caught errors to the delegate.
-    private func updateContext(_ id: String, transform: (inout SpeechContext) throws -> SpeechSegment) {
+    private func updateContext(_ id: String, transform: (inout AudioContext) throws -> Segment) {
         guard var context = self.contexts.get(contextId: id) else {
             self.delegateQueue.async {
                 self.delegate?
@@ -400,7 +394,7 @@ extension SpeechClient: SluClientDelegate {
             return
         }
 
-        let segment: SpeechSegment
+        let segment: Segment
         do {
             segment = try transform(&context)
         } catch {
@@ -421,8 +415,9 @@ extension SpeechClient: SluClientDelegate {
 
 // MARK: - SpeechlyClientProtocol protocol conformance.
 
-extension SpeechClient: SpeechClientProtocol {
-    public weak var delegate: SpeechClientDelegate? {
+extension Client: SpeechlyProtocol {
+    
+    public weak var delegate: SpeechlyDelegate? {
         get {
             return self.delegateVal
         }
@@ -434,33 +429,21 @@ extension SpeechClient: SpeechClientProtocol {
         }
     }
 
-    public func start(appId: String? = nil) {
-        self
-            .authenticate()
-            .flatMap { token in
-                self.sluClient.start(token: token, config: self.appConfig, appId: appId)
-            }
-            .flatMapThrowing {
-                try self.audioRecorder.start()
-            }
-            .whenComplete { result in
-                switch result {
-                case .success:
-                    self.delegateQueue.async {
-                        self.delegate?.speechlyClientDidStart(self)
-                    }
-                case let .failure(error):
-                    self.delegateQueue.async {
-                        // TODO: this will mix API errors and audio recorder errors together.
-                        // We should change the error handling so that we can distinguish between the two.
-                        self.delegate?
-                            .speechlyClientDidCatchError(self, error: .networkError(error.localizedDescription))
-                    }
+    public func startContext(appId: String? = nil) {
+        self.authenticate()
+            .flatMap { self.sluClient.connect(token: $0, config: self.appConfig) }
+            .flatMapThrowing { try self.audioRecorder.start() }
+            .flatMap { self.sluClient.startContext(appId: appId) }
+            .whenFailure { error in
+                self.delegateQueue.async {
+                    // TODO: this will mix API errors and audio recorder errors together.
+                    // We should change the error handling so that we can distinguish between the two.
+                    self.delegate?.speechlyClientDidCatchError(self, error: .networkError(error.localizedDescription))
                 }
             }
     }
 
-    public func stop() {
+    public func stopContext() {
         self.audioRecorder.stop()
     }
 
@@ -468,13 +451,13 @@ extension SpeechClient: SpeechClientProtocol {
         do {
             try self.audioRecorder.suspend()
         } catch {
-            print("Error suspending audio recorder", error)
+            os_log("Error suspending audio recorder: %@", log: speechly, type: .error, String(describing: error))
         }
 
         do {
             try self.sluClient.suspend().wait()
         } catch {
-            print("Error suspending API client", error)
+            os_log("Error suspending API client: %@", log: speechly, type: .error, String(describing: error))
         }
     }
 

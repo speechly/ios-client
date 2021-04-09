@@ -3,14 +3,26 @@ import Dispatch
 import GRPC
 import NIO
 import SpeechlyAPI
+import os.log
 
 // MARK: - SLU service definition.
+
+/// Possible invalid states of the client, eg. if `startContext` is called without connecting to API first.
+public enum InvalidSLUState: Error {
+    case notConnected
+    case contextAlreadyStarted
+    case contextNotStarted
+}
 
 /// An SluClientProtocol that is implemented on top of public Speechly SLU gRPC API.
 /// Uses `swift-grpc` for handling gRPC streams and connectivity.
 public class SluClient {
+    
+    typealias DisconnectTimer = DispatchWorkItem
+
     private enum State {
         case idle
+        case connected(DisconnectTimer, SluStream)
         case streaming(SluStream)
     }
 
@@ -55,25 +67,15 @@ public class SluClient {
 
     deinit {
         do {
-            switch self.state {
-            case let .streaming(stream):
-                // Close the stream from the client side.
-                try self.stopStream(stream: stream).wait()
-
-                // Wait until the stream is closed from the server side.
-                let status = try stream.status.wait()
-                print("SLU stream stopped with status:", status.description)
-            default:
-                break
-            }
+            try self.disconnect().wait()
         } catch {
-            print("Error stopping SLU stream:", error)
+            os_log("SLU stream disconnect failed: %@", log: speechly, type: .error, String(describing: error))
         }
 
         do {
             try self.client.channel.close().wait()
         } catch {
-            print("Error closing gRPC channel:", error)
+            os_log("gRPC channel close failed: %@", log: speechly, type: .error, String(describing: error))
         }
     }
 }
@@ -97,86 +99,105 @@ extension SluClient: SluClientProtocol {
     private typealias SluRequestProto = Speechly_Slu_V1_SLURequest
     private typealias SluResponseProto = Speechly_Slu_V1_SLUResponse
 
-    public func start(token: ApiAccessToken, config: SluConfig, appId: String? = nil) -> EventLoopFuture<Void> {
-        let future: EventLoopFuture<SluStream>
-
+    public func connect(token: ApiAccessToken, config: SluConfig) -> EventLoopFuture<Void> {
         switch self.state {
-        case let .streaming(stream):
-            future = self
-                .stopStream(stream: stream)
-                .flatMap {
-                    self.makeStream(token: token, config: config, appId: appId)
+        case .streaming, .connected(_, _):
+            return self.group.next().makeSucceededVoidFuture()
+        case .idle:
+            return self.makeStream(token: token, config: config)
+                .map { (timer, stream) in
+                    self.state = .connected(timer, stream)
+                }
+        }
+    }
+    
+    public func disconnect() -> EventLoopFuture<Void> {
+        switch self.state {
+        case .streaming(let stream):
+            return self.stopContext()
+                .flatMap { self.stopStream(stream: stream) }
+                .map { _ in
+                    return
+                }
+        case .connected(let timer, let stream):
+            return self.stopStream(stream: stream)
+                .map { _ in
+                    timer.cancel()
+                    return
                 }
         case .idle:
-            future = self.makeStream(token: token, config: config, appId: appId)
+            return self.group.next().makeSucceededVoidFuture()
         }
-
-        return future.map { stream in
-            self.state = .streaming(stream)
+    }
+    
+    public func startContext(appId: String? = nil) -> EventLoopFuture<Void> {
+        switch self.state {
+        case .idle:
+            return self.group.next().makeFailedFuture(InvalidSLUState.notConnected)
+        case .streaming(_):
+            return self.group.next().makeFailedFuture(InvalidSLUState.contextAlreadyStarted)
+        case let .connected(timer, stream):
+            timer.cancel()
+            return stream.sendMessage(SluRequestProto.with {
+                $0.event = SluEventProto.with {
+                    $0.event = .start
+                    $0.appID = appId ?? ""
+                }
+            })
+            .map {
+                self.state = .streaming(stream)
+            }
         }
     }
 
-    public func stop() -> EventLoopFuture<Void> {
+    public func stopContext() -> EventLoopFuture<Void> {
         switch self.state {
-        case let .streaming(stream):
-            return self
-                .stopStream(stream: stream)
-                .map {
-                    self.state = .idle
-                }
         case .idle:
-            return self.group.next().makeSucceededFuture(Void())
+            return self.group.next().makeFailedFuture(InvalidSLUState.notConnected)
+        case .connected(_, _):
+            return self.group.next().makeFailedFuture(InvalidSLUState.contextNotStarted)
+        case let .streaming(stream):
+            return stream
+                .sendMessage(SluRequestProto.with {
+                    $0.event = SluEventProto.with {
+                        $0.event = .stop
+                    }
+                })
+                .map {
+                    self.state = .connected(self.makeDisconnectTimer(), stream)
+                }
         }
     }
 
     public func resume() -> EventLoopFuture<Void> {
-        // Resume logic is basically the same as suspend.
         // If there is somehow still an active stream, discard it, because it's most likely corrupted.
-        return self.suspend()
+        return self.disconnect()
     }
 
     public func suspend() -> EventLoopFuture<Void> {
-        switch self.state {
-        case let .streaming(stream):
-            // Make a promise that's passed to stream.cancel().
-            let promise = self.group.next().makePromise(of: Void.self)
-
-            // Once stream is canceled, we want to wait until the server closes the stream from its end.
-            let future = promise.futureResult.flatMap {
-                stream.status
-            }
-
-            // Cancel the stream.
-            stream.cancel(promise: promise)
-
-            // Discard the status.
-            return future.map { _ in
-                return
-            }
-        case .idle:
-            return self.group.next().makeSucceededFuture(Void())
-        }
+        return self.disconnect()
     }
 
-    public func write(data: Data) -> EventLoopFuture<Bool> {
+    public func write(data: Data) -> EventLoopFuture<Void> {
         switch self.state {
+        case .idle:
+            return self.group.next().makeFailedFuture(InvalidSLUState.notConnected)
+        case .connected(_, _):
+            return self.group.next().makeFailedFuture(InvalidSLUState.contextNotStarted)
         case let .streaming(stream):
             return stream
                 .sendMessage(SluRequestProto.with {
                     $0.audio = data
                 })
-                .map { true }
-        case .idle:
-            return self.group.next().makeSucceededFuture(false)
         }
     }
 
     private typealias SluConfigProto = Speechly_Slu_V1_SLUConfig
     private typealias SluEventProto = Speechly_Slu_V1_SLUEvent
 
-    private func makeStream(token: ApiAccessToken, config: SluConfig, appId: String?) -> EventLoopFuture<SluStream> {
-        var callOptions = makeTokenCallOptions(token: token.tokenString)
-        callOptions.requestIDHeader = UUID.init().uuidString
+    private func makeStream(token: ApiAccessToken, config: SluConfig) -> EventLoopFuture<(DisconnectTimer, SluStream)> {
+        os_log("Connecting to SLU API", log: speechly, type: .debug)
+        let callOptions = makeTokenCallOptions(token: token.tokenString)
 
         let stream = self.client.stream(
             callOptions: callOptions,
@@ -194,16 +215,7 @@ extension SluClient: SluClientProtocol {
                     self.delegate?.sluClientDidStopStream(self, status: status)
                 }
             }
-
-            switch self.state {
-            case let .streaming(stateStream):
-                if stream.options.requestIDHeader != nil &&
-                   stream.options.requestIDHeader == stateStream.options.requestIDHeader {
-                    self.state = .idle
-                }
-            default:
-                return
-            }
+            self.state = .idle
         }
 
         return stream
@@ -214,30 +226,39 @@ extension SluClient: SluClientProtocol {
                     $0.channels = Int32(config.channels)
                 }
             })
-            .flatMap {
-               stream.sendMessage(SluRequestProto.with {
-                   $0.event = SluEventProto.with {
-                       $0.event = .start
-                       $0.appID = appId ?? ""
-                   }
-               })
+            .map {
+                return (self.makeDisconnectTimer(), stream)
             }
-            .map { stream }
     }
 
-    private func stopStream(stream: SluStream) -> EventLoopFuture<Void> {
-        return stream
-            .sendMessage(SluRequestProto.with {
-                $0.event = SluEventProto.with {
-                    $0.event = .stop
-                }
-            })
+    private func makeDisconnectTimer() -> DisconnectTimer {
+        let task = DispatchWorkItem {
+            do {
+                try self.disconnect().wait()
+            } catch {
+                os_log("Disconnect stream failed: %@", log: speechly, type: .error, String(describing: error))
+            }
+        }
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 30, execute: task)
+        return task
+    }
+    
+    private func stopStream(stream: SluStream) -> EventLoopFuture<GRPCStatus> {
+        os_log("Disconnect SLU stream", log: speechly, type: .debug)
+        // Make a promise that's passed to stream.cancel().
+        let promise = self.group.next().makePromise(of: Void.self)
+
+        // Once stream is canceled, we want to wait until the server closes the stream from its end.
+        let future: EventLoopFuture<GRPCStatus> = promise.futureResult
             .flatMap {
-                stream.status
+                self.state = .idle
+                return stream.status
             }
-            .map { _ in
-                return
-            }
+
+        stream.sendEnd(promise: promise)
+        // Cancel the stream.
+        //stream.cancel(promise: promise)
+        return future
     }
 
     private func handleResponse(response: SluResponseProto) -> Void {
@@ -249,16 +270,6 @@ extension SluClient: SluClientProtocol {
             case .started:
                 self.delegate?.sluClientDidReceiveContextStart(self, contextId: contextId)
             case .finished:
-                // Currently we only close the stream after receiving context stop message.
-                // This is not ideal, but it's the only way to drain the stream.
-                // TODO: figure out a nicer way to handle stream closures.
-                switch self.state {
-                case let .streaming(stream):
-                    stream.sendEnd(promise: nil)
-                default:
-                    break
-                }
-
                 self.delegate?.sluClientDidReceiveContextStop(self, contextId: contextId)
             case let .tentativeTranscript(transcript):
                 self.delegate?.sluClientDidReceiveTentativeTranscript(

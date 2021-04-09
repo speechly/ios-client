@@ -1,4 +1,4 @@
-# SpeechEntity.ID
+# Entity.ID
 
 A custom ID implementation for `SpeechEntity`.
 Since entities have two indices, start and end,

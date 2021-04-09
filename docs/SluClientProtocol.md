@@ -21,12 +21,12 @@ A delegate which is called when the client receives messages from the API or cat
 var delegate: SluClientDelegate?
 ```
 
-### start(token:​config:​appId:​)
+### connect(token:​config:​)
 
-Starts a new SLU recognition stream.
+Connects to the SLU API.
 
 ``` swift
-func start(token: ApiAccessToken, config: SluConfig, appId: String?) -> EventLoopFuture<Void>
+func connect(token: ApiAccessToken, config: SluConfig) -> EventLoopFuture<Void>
 ```
 
 > 
@@ -35,18 +35,49 @@ func start(token: ApiAccessToken, config: SluConfig, appId: String?) -> EventLoo
 
   - token: An auth token received from Speechly Identity API.
   - config: The configuration of the SLU stream.
+
+#### Returns
+
+A future which will be fullfilled when the stream has been connected.
+
+### disconnect()
+
+Disconnects the current connection to the SLU API.
+
+``` swift
+func disconnect() -> EventLoopFuture<Void>
+```
+
+If there is an active `Context`, it is cancelled.
+
+#### Returns
+
+A future which is fulfilled when the stream has been disconnected.
+
+### startContext(appId:​)
+
+Starts a new SLU recognition stream.
+
+``` swift
+func startContext(appId: String?) -> EventLoopFuture<Void>
+```
+
+> 
+
+#### Parameters
+
   - appId: The target appId for the audio, if not set in the token.
 
 #### Returns
 
 A future which will be fullfilled when the stream has been started.
 
-### stop()
+### stopContext()
 
 Stops the current SLU recognition stream
 
 ``` swift
-func stop() -> EventLoopFuture<Void>
+func stopContext() -> EventLoopFuture<Void>
 ```
 
 #### Returns
@@ -82,7 +113,7 @@ A future which will be fullfilled when the channels are restored.
 Writes audio data on the current stream.
 
 ``` swift
-func write(data: Data) -> EventLoopFuture<Bool>
+func write(data: Data) -> EventLoopFuture<Void>
 ```
 
 > 

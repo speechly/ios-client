@@ -1,7 +1,7 @@
-# SpeechTranscriptView
+# TranscriptView
 
 ``` swift
-public class SpeechTranscriptView: UIView
+public class TranscriptView: UIView
 ```
 
 ## Inheritance
@@ -21,7 +21,7 @@ public init()
 ### `segment`
 
 ``` swift
-var segment: SpeechSegment?
+var segment: Speechly.Segment?
 ```
 
 ### `font`
@@ -53,7 +53,7 @@ var autohideInterval: TimeInterval? = 3
 ### `configure(segment:animated:)`
 
 ``` swift
-public func configure(segment: SpeechSegment?, animated: Bool)
+public func configure(segment: Speechly.Segment?, animated: Bool)
 ```
 
 ### `hide(animated:)`

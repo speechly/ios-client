@@ -6,16 +6,16 @@ import Foundation
 ///
 /// A single context aggregates messages from SLU API, which correspond to the audio portion
 /// sent to the API within a single recognition stream.
-public struct SpeechContext: Hashable, Identifiable {
-    private var _segments: [SpeechSegment] = []
-    private var _indexedSegments: [Int:SpeechSegment] = [:]
+public struct AudioContext: Hashable, Identifiable {
+    private var _segments: [Segment] = []
+    private var _indexedSegments: [Int:Segment] = [:]
     private var _segmentsAreDirty: Bool = false
 
     /// The ID of the segment, assigned by the API.
     public let id: String
 
     /// The segments belonging to the segment, can be empty if there was nothing recognised from the audio.
-    public var segments: [SpeechSegment] {
+    public var segments: [Segment] {
         mutating get {
             if self._segmentsAreDirty {
                 self._segments = Array(self._indexedSegments.values).sorted()
@@ -27,7 +27,7 @@ public struct SpeechContext: Hashable, Identifiable {
 
         set(newValue) {
             self._segments = newValue.sorted()
-            self._indexedSegments = newValue.reduce(into: [Int:SpeechSegment]()) { (acc, segment) in
+            self._indexedSegments = newValue.reduce(into: [Int:Segment]()) { (acc, segment) in
                 acc[segment.segmentId] = segment
             }
         }
@@ -49,7 +49,7 @@ public struct SpeechContext: Hashable, Identifiable {
     /// - Important: this initialiser does not check whether `segments` have `id` set as their `contextId` values,
     ///   so it is possible to pass segments to this initialiser that don't belong to this context
     ///   according to the identifiers.
-    public init(id: String, segments: [SpeechSegment]) {
+    public init(id: String, segments: [Segment]) {
         self.init(id: id)
         self.segments = segments
     }
@@ -57,28 +57,28 @@ public struct SpeechContext: Hashable, Identifiable {
 
 // MARK: - Comparable protocol conformance.
 
-extension SpeechContext: Comparable {
-    public static func < (lhs: SpeechContext, rhs: SpeechContext) -> Bool {
+extension AudioContext: Comparable {
+    public static func < (lhs: AudioContext, rhs: AudioContext) -> Bool {
         return lhs.id < rhs.id
     }
 
-    public static func <= (lhs: SpeechContext, rhs: SpeechContext) -> Bool {
+    public static func <= (lhs: AudioContext, rhs: AudioContext) -> Bool {
         return lhs.id <= rhs.id
     }
 
-    public static func >= (lhs: SpeechContext, rhs: SpeechContext) -> Bool {
+    public static func >= (lhs: AudioContext, rhs: AudioContext) -> Bool {
         return lhs.id >= rhs.id
     }
 
-    public static func > (lhs: SpeechContext, rhs: SpeechContext) -> Bool {
+    public static func > (lhs: AudioContext, rhs: AudioContext) -> Bool {
         return lhs.id > rhs.id
     }
 }
 
 // MARK: - Parsing logic implementation.
 
-extension SpeechContext {
-    mutating func addTranscripts(_ value: [SpeechTranscript], segmentId: Int) throws -> SpeechSegment {
+extension AudioContext {
+    mutating func addTranscripts(_ value: [Transcript], segmentId: Int) throws -> Segment {
         return try self.updateSegment(id: segmentId, transform: { segment in
             for t in value {
                 try segment.addTranscript(t)
@@ -86,7 +86,7 @@ extension SpeechContext {
         })
     }
 
-    mutating func addEntities(_ value: [SpeechEntity], segmentId: Int) throws -> SpeechSegment {
+    mutating func addEntities(_ value: [Entity], segmentId: Int) throws -> Segment {
         return try self.updateSegment(id: segmentId, transform: { segment in
             for e in value {
                 try segment.addEntity(e)
@@ -94,15 +94,15 @@ extension SpeechContext {
         })
     }
 
-    mutating func addIntent(_ value: SpeechIntent, segmentId: Int) throws -> SpeechSegment {
+    mutating func addIntent(_ value: Intent, segmentId: Int) throws -> Segment {
         return try self.updateSegment(id: segmentId, transform: { segment in try segment.setIntent(value) })
     }
 
-    mutating func finaliseSegment(segmentId: Int) throws -> SpeechSegment {
+    mutating func finaliseSegment(segmentId: Int) throws -> Segment {
         return try self.updateSegment(id: segmentId, transform: { segment in try segment.finalise() })
     }
 
-    mutating func finalise() throws -> SpeechContext {
+    mutating func finalise() throws -> AudioContext {
         for (k, v) in self._indexedSegments {
             if !v.isFinal {
                 self._indexedSegments.removeValue(forKey: k)
@@ -114,8 +114,8 @@ extension SpeechContext {
         return self
     }
 
-    private mutating func updateSegment(id: Int, transform: (inout SpeechSegment) throws -> Void) rethrows -> SpeechSegment {
-        var segment = self._indexedSegments[id] ?? SpeechSegment(segmentId: id, contextId: self.id)
+    private mutating func updateSegment(id: Int, transform: (inout Segment) throws -> Void) rethrows -> Segment {
+        var segment = self._indexedSegments[id] ?? Segment(segmentId: id, contextId: self.id)
 
         try transform(&segment)
 

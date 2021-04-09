@@ -1,7 +1,7 @@
-# SpeechButton
+# MicrophoneButtonView
 
 ``` swift
-public class SpeechButton: UIView
+public class MicrophoneButtonView: UIView
 ```
 
 ## Inheritance
@@ -13,7 +13,7 @@ public class SpeechButton: UIView
 ### `init(diameter:delegate:)`
 
 ``` swift
-public init(diameter: CGFloat = 80, delegate: SpeechButtonDelegate)
+public init(diameter: CGFloat = 80, delegate: MicrophoneButtonDelegate)
 ```
 
 ## Properties
@@ -46,4 +46,12 @@ var pressedScale: CGFloat = 1.5
 
 ``` swift
 var isPressed: Bool = false
+```
+
+## Methods
+
+### `reloadAuthorizationStatus()`
+
+``` swift
+public func reloadAuthorizationStatus()
 ```

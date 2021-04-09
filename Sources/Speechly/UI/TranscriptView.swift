@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import SnapKit
 
-public class SpeechTranscriptView: UIView {
+public class TranscriptView: UIView {
     
     public init() {
         super.init(frame: .zero)
@@ -23,9 +23,9 @@ public class SpeechTranscriptView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public private(set) var segment: SpeechSegment?
+    public private(set) var segment: Speechly.Segment?
     
-    public func configure(segment: SpeechSegment?, animated: Bool) {
+    public func configure(segment: Speechly.Segment?, animated: Bool) {
         self.segment = segment
         
         reloadText(animated: animated)
@@ -134,12 +134,12 @@ public class SpeechTranscriptView: UIView {
 
 class SpeechTranscriptLabel: UILabel {
     
-    private(set) var transcript: SpeechTranscript?
-    private(set) var entity: SpeechEntity?
+    private(set) var transcript: Speechly.Transcript?
+    private(set) var entity: Speechly.Entity?
     
-    private unowned let parent: SpeechTranscriptView
+    private unowned let parent: TranscriptView
     
-    init(parent: SpeechTranscriptView) {
+    init(parent: TranscriptView) {
         self.parent = parent
         
         super.init(frame: .zero)
@@ -152,7 +152,7 @@ class SpeechTranscriptLabel: UILabel {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(segment: SpeechSegment, transcript: SpeechTranscript, entity: SpeechEntity?) {
+    func configure(segment: Speechly.Segment, transcript: Speechly.Transcript, entity: Speechly.Entity?) {
         self.transcript = transcript
         
         let shouldHighlightEntity = entity != nil && self.entity == nil && segment.isFinal
@@ -188,11 +188,11 @@ class SpeechTranscriptLabel: UILabel {
     }
 }
 
-extension SpeechSegment {
+extension Speechly.Segment {
     
-    typealias AttributeProvider = (_ transcript: SpeechTranscript, _ entity: SpeechEntity?) -> [NSAttributedString.Key: Any]
+    typealias AttributeProvider = (_ transcript: Speechly.Transcript, _ entity: Speechly.Entity?) -> [NSAttributedString.Key: Any]
     
-    func entity(for transcript: SpeechTranscript) -> SpeechEntity? {
+    func entity(for transcript: Speechly.Transcript) -> Speechly.Entity? {
         return entities.first(where: {
             transcript.index >= $0.startIndex && transcript.index < $0.endIndex
         })

@@ -7,10 +7,10 @@ import NIO
 ///
 /// The purpose of a speech client is to abstract away the handling of audio recording and API streaming,
 /// providing the user with a high-level abstraction over the microphone speech recognition.
-public protocol SpeechClientProtocol {
+public protocol SpeechlyProtocol {
     /// A delegate which is called when the client has received and parsed messages from the API.
     /// The delegate will also be called when the client catches an error.
-    var delegate: SpeechClientDelegate? { get set }
+    var delegate: SpeechlyDelegate? { get set }
 
     /// Start a new recognition context and unmute the microphone.
     ///
@@ -20,14 +20,14 @@ public protocol SpeechClientProtocol {
     /// - Important: Calling `start` again after another `start` call will stop the previous recognition context.
     ///   Starting a recognition context is an asynchronous operation.
     ///   Use `speechlyClientDidStart` method in `SpeechClientDelegate` protocol for acknowledgments from the client.
-    func start(appId: String?)
+    func startContext(appId: String?)
 
     /// Stop current recognition context and mute the microphone.
     ///
     /// - Important: Calling `stop` again after another `stop` call is a no-op.
     ///   Stopping a recognition context is an asynchronous operation.
     ///   Use `speechlyClientDidStop` method in `SpeechClientDelegate` protocol for acknowledgments from the client.
-    func stop()
+    func stopContext()
 
     /// Suspend the client, releasing any resources and cleaning up any pending contexts.
     ///
@@ -48,18 +48,18 @@ public protocol SpeechClientProtocol {
 ///
 /// - Important: In order to avoid retain cycles, classes implementing this delegate
 ///   MUST NOT maintain a strong reference to the `SpeechClientProtocol`.
-public protocol SpeechClientDelegate: class {
+public protocol SpeechlyDelegate: class {
     /// Called when the client catches an error.
     ///
     /// - Parameters:
     ///   - error: The error which was caught.
-    func speechlyClientDidCatchError(_ speechlyClient: SpeechClientProtocol, error: SpeechClientError)
+    func speechlyClientDidCatchError(_ speechlyClient: SpeechlyProtocol, error: SpeechlyError)
 
     /// Called after the client has acknowledged a recognition context start.
-    func speechlyClientDidStart(_ speechlyClient: SpeechClientProtocol)
+    func speechlyClientDidStartContext(_ speechlyClient: SpeechlyProtocol)
 
     /// Called after the client has acknowledged a recognition context stop.
-    func speechlyClientDidStop(_ speechlyClient: SpeechClientProtocol)
+    func speechlyClientDidStopContext(_ speechlyClient: SpeechlyProtocol)
 
     /// Called after the client has processed an update to current `SpeechSegment`.
     ///
@@ -72,7 +72,7 @@ public protocol SpeechClientDelegate: class {
     ///
     /// - Parameters:
     ///   - segment: The speech segment that has been updated.
-    func speechlyClientDidUpdateSegment(_ speechlyClient: SpeechClientProtocol, segment: SpeechSegment)
+    func speechlyClientDidUpdateSegment(_ speechlyClient: SpeechlyProtocol, segment: Segment)
 
     /// Called after the client has received a new transcript message from the API.
     ///
@@ -81,7 +81,7 @@ public protocol SpeechClientDelegate: class {
     ///   - segmentId: The ID of the speech segment that the transcript belongs to.
     ///   - transcript: The transcript received from the API.
     func speechlyClientDidReceiveTranscript(
-        _ speechlyClient: SpeechClientProtocol, contextId: String, segmentId: Int, transcript: SpeechTranscript
+        _ speechlyClient: SpeechlyProtocol, contextId: String, segmentId: Int, transcript: Transcript
     )
 
     /// Called after the client has received a new entity message from the API.
@@ -91,7 +91,7 @@ public protocol SpeechClientDelegate: class {
     ///   - segmentId: The ID of the speech segment that the entity belongs to.
     ///   - entity: The entity received from the API.
     func speechlyClientDidReceiveEntity(
-        _ speechlyClient: SpeechClientProtocol, contextId: String, segmentId: Int, entity: SpeechEntity
+        _ speechlyClient: SpeechlyProtocol, contextId: String, segmentId: Int, entity: Entity
     )
 
     /// Called after the client has received a new intent message from the API.
@@ -101,12 +101,12 @@ public protocol SpeechClientDelegate: class {
     ///   - segmentId: The ID of the speech segment that the intent belongs to.
     ///   - transcript: The intent received from the API.
     func speechlyClientDidReceiveIntent(
-        _ speechlyClient: SpeechClientProtocol, contextId: String, segmentId: Int, intent: SpeechIntent
+        _ speechlyClient: SpeechlyProtocol, contextId: String, segmentId: Int, intent: Intent
     )
 }
 
 /// Errors caught by `SpeechClientProtocol` and dispatched to `SpeechClientDelegate`.
-public enum SpeechClientError: Error {
+public enum SpeechlyError: Error {
     /// A network-level error.
     /// Usually these errors are unrecoverable and require a full restart of the client.
     case networkError(String)
@@ -127,18 +127,19 @@ public enum SpeechClientError: Error {
 
 // MARK: - SpeechClientDelegate default implementation.
 
-public extension SpeechClientDelegate {
-    func speechlyClientDidStart(_ speechlyClient: SpeechClientProtocol) {}
-    func speechlyClientDidStop(_ speechlyClient: SpeechClientProtocol) {}
-    func speechlyClientDidCatchError(_ speechlyClient: SpeechClientProtocol, error: SpeechClientError) {}
-    func speechlyClientDidUpdateSegment(_ speechlyClient: SpeechClientProtocol, segment: SpeechSegment) {}
+public extension SpeechlyDelegate {
+    
+    func speechlyClientDidStartContext(_ speechlyClient: SpeechlyProtocol) {}
+    func speechlyClientDidStopContext(_ speechlyClient: SpeechlyProtocol) {}
+    func speechlyClientDidCatchError(_ speechlyClient: SpeechlyProtocol, error: SpeechlyError) {}
+    func speechlyClientDidUpdateSegment(_ speechlyClient: SpeechlyProtocol, segment: Segment) {}
     func speechlyClientDidReceiveTranscript(
-        _ speechlyClient: SpeechClientProtocol, contextId: String, segmentId: Int, transcript: SpeechTranscript
+        _ speechlyClient: SpeechlyProtocol, contextId: String, segmentId: Int, transcript: Transcript
     ) {}
     func speechlyClientDidReceiveEntity(
-        _ speechlyClient: SpeechClientProtocol, contextId: String, segmentId: Int, entity: SpeechEntity
+        _ speechlyClient: SpeechlyProtocol, contextId: String, segmentId: Int, entity: Entity
     ) {}
     func speechlyClientDidReceiveIntent(
-        _ speechlyClient: SpeechClientProtocol, contextId: String, segmentId: Int, intent: SpeechIntent
+        _ speechlyClient: SpeechlyProtocol, contextId: String, segmentId: Int, intent: Intent
     ) {}
 }

@@ -10,7 +10,7 @@ Exposes functionality for authenticating identifiers in exchange for API access 
 
 ## Inheritance
 
-[`Promisable`](Promisable), [`IdentityClientProtocol`](IdentityClientProtocol)
+[`Promisable`](Promisable), [`IdentityClientProtocol`](IdentityClientProtocol.md)
 
 ## Nested Type Aliases
 

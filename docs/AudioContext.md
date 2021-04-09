@@ -1,9 +1,9 @@
-# SpeechContext
+# AudioContext
 
 The speech recognition context.
 
 ``` swift
-public struct SpeechContext: Hashable, Identifiable
+public struct AudioContext: Hashable, Identifiable
 ```
 
 A single context aggregates messages from SLU API, which correspond to the audio portion
@@ -32,7 +32,7 @@ public init(id: String)
 Creates a new speech context.
 
 ``` swift
-public init(id: String, segments: [SpeechSegment])
+public init(id: String, segments: [Segment])
 ```
 
 > 
@@ -57,7 +57,7 @@ let id: String
 The segments belonging to the segment, can be empty if there was nothing recognised from the audio.
 
 ``` swift
-var segments: [SpeechSegment]
+var segments: [Segment]
 ```
 
 ## Methods
@@ -65,23 +65,23 @@ var segments: [SpeechSegment]
 ### `<(lhs:rhs:)`
 
 ``` swift
-public static func <(lhs: SpeechContext, rhs: SpeechContext) -> Bool
+public static func <(lhs: AudioContext, rhs: AudioContext) -> Bool
 ```
 
 ### `<=(lhs:rhs:)`
 
 ``` swift
-public static func <=(lhs: SpeechContext, rhs: SpeechContext) -> Bool
+public static func <=(lhs: AudioContext, rhs: AudioContext) -> Bool
 ```
 
 ### `>=(lhs:rhs:)`
 
 ``` swift
-public static func >=(lhs: SpeechContext, rhs: SpeechContext) -> Bool
+public static func >=(lhs: AudioContext, rhs: AudioContext) -> Bool
 ```
 
 ### `>(lhs:rhs:)`
 
 ``` swift
-public static func >(lhs: SpeechContext, rhs: SpeechContext) -> Bool
+public static func >(lhs: AudioContext, rhs: AudioContext) -> Bool
 ```

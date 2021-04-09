@@ -8,7 +8,7 @@ public class UserDefaultsCache
 
 ## Inheritance
 
-[`CacheProtocol`](CacheProtocol)
+[`CacheProtocol`](CacheProtocol.md)
 
 ## Initializers
 

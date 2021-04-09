@@ -9,7 +9,7 @@ public class SluClient
 
 ## Inheritance
 
-[`SluClientProtocol`](SluClientProtocol)
+[`SluClientProtocol`](SluClientProtocol.md)
 
 ## Nested Type Aliases
 
@@ -61,16 +61,28 @@ var delegate: SluClientDelegate?
 
 ## Methods
 
-### `start(token:config:appId:)`
+### `connect(token:config:)`
 
 ``` swift
-public func start(token: ApiAccessToken, config: SluConfig, appId: String? = nil) -> EventLoopFuture<Void>
+public func connect(token: ApiAccessToken, config: SluConfig) -> EventLoopFuture<Void>
 ```
 
-### `stop()`
+### `disconnect()`
 
 ``` swift
-public func stop() -> EventLoopFuture<Void>
+public func disconnect() -> EventLoopFuture<Void>
+```
+
+### `startContext(appId:)`
+
+``` swift
+public func startContext(appId: String? = nil) -> EventLoopFuture<Void>
+```
+
+### `stopContext()`
+
+``` swift
+public func stopContext() -> EventLoopFuture<Void>
 ```
 
 ### `resume()`
@@ -88,5 +100,5 @@ public func suspend() -> EventLoopFuture<Void>
 ### `write(data:)`
 
 ``` swift
-public func write(data: Data) -> EventLoopFuture<Bool>
+public func write(data: Data) -> EventLoopFuture<Void>
 ```

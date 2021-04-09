@@ -3,7 +3,7 @@ import XCTest
 
 final class SpeechlyTests: XCTestCase {
     func testExample() {
-        let transcript = SpeechTranscript(index: 0, value: "test", startOffset: 0, endOffset: 1, isFinal: true)
+        let transcript = Transcript(index: 0, value: "test", startOffset: 0, endOffset: 1, isFinal: true)
         XCTAssertEqual(transcript.value, "test")
     }
 

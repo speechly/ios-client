@@ -1,9 +1,9 @@
-# SpeechSegment
+# Segment
 
 A segment is a part of a recognition context (or a phrase) which is defined by an intent.
 
 ``` swift
-public struct SpeechSegment: Hashable, Identifiable
+public struct Segment: Hashable, Identifiable
 ```
 
 e.g. a phrase "book a restaurant and send an invitation to John" contains two intents,
@@ -38,7 +38,7 @@ public init(segmentId: Int, contextId: String)
 Creates a new segment with provided parameters.
 
 ``` swift
-public init(segmentId: Int, contextId: String, isFinal: Bool, intent: SpeechIntent, entities: [SpeechEntity], transcripts: [SpeechTranscript])
+public init(segmentId: Int, contextId: String, isFinal: Bool, intent: Intent, entities: [Entity], transcripts: [Transcript])
 ```
 
 > 
@@ -91,7 +91,7 @@ var isFinal: Bool = false
 The intent of the segment. Returns an empty tentative intent by default.
 
 ``` swift
-var intent: SpeechIntent = SpeechIntent.Empty
+var intent: Intent = Intent.Empty
 ```
 
 ### `entities`
@@ -99,7 +99,7 @@ var intent: SpeechIntent = SpeechIntent.Empty
 The entities belonging to the segment.
 
 ``` swift
-var entities: [SpeechEntity]
+var entities: [Entity]
 ```
 
 ### `transcripts`
@@ -107,7 +107,7 @@ var entities: [SpeechEntity]
 The transcripts belonging to the segment.
 
 ``` swift
-var transcripts: [SpeechTranscript]
+var transcripts: [Transcript]
 ```
 
 ## Methods
@@ -115,23 +115,23 @@ var transcripts: [SpeechTranscript]
 ### `<(lhs:rhs:)`
 
 ``` swift
-public static func <(lhs: SpeechSegment, rhs: SpeechSegment) -> Bool
+public static func <(lhs: Segment, rhs: Segment) -> Bool
 ```
 
 ### `<=(lhs:rhs:)`
 
 ``` swift
-public static func <=(lhs: SpeechSegment, rhs: SpeechSegment) -> Bool
+public static func <=(lhs: Segment, rhs: Segment) -> Bool
 ```
 
 ### `>=(lhs:rhs:)`
 
 ``` swift
-public static func >=(lhs: SpeechSegment, rhs: SpeechSegment) -> Bool
+public static func >=(lhs: Segment, rhs: Segment) -> Bool
 ```
 
 ### `>(lhs:rhs:)`
 
 ``` swift
-public static func >(lhs: SpeechSegment, rhs: SpeechSegment) -> Bool
+public static func >(lhs: Segment, rhs: Segment) -> Bool
 ```
