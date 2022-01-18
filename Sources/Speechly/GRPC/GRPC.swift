@@ -22,12 +22,16 @@ public func makeChannel(addr: String, loopCount: Int) throws -> GRPCChannel {
 /// - Returns: A gRPC channel connected to given server address and backed by given eventloop group.
 public func makeChannel(addr: String, group: EventLoopGroup) throws -> GRPCChannel {
     let address = try GRPCAddress(addr: addr)
+    let builder = { () -> ClientConnection.Builder in
+        switch address.secure {
+        case true:
+            return ClientConnection.usingPlatformAppropriateTLS(for: group)
+        case false:
+            return ClientConnection.insecure(group: group)
+        }
+    }()
 
-    if address.secure {
-        return ClientConnection.secure(group: group).connect(host: address.host, port: address.port)
-    }
-
-    return ClientConnection.insecure(group: group).connect(host: address.host, port: address.port)
+    return builder.connect(host: address.host, port: address.port)
 }
 
 /// A function that creates new gRPC call options (metadata) that contains an authorisation token.
