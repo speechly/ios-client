@@ -48,7 +48,7 @@ public protocol SpeechlyProtocol {
 ///
 /// - Important: In order to avoid retain cycles, classes implementing this delegate
 ///   MUST NOT maintain a strong reference to the `SpeechClientProtocol`.
-public protocol SpeechlyDelegate: class {
+public protocol SpeechlyDelegate: AnyObject {
     /// Called when the client catches an error.
     ///
     /// - Parameters:

@@ -85,7 +85,7 @@ public struct SluConfig {
 ///
 /// - Important: In order to avoid retain cycles, classes implementing this delegate
 ///   MUST NOT maintain a strong reference to the `SluClientProtocol`.
-public protocol SluClientDelegate: class {
+public protocol SluClientDelegate: AnyObject {
     /// An alias for tentative transcript message.
     typealias TentativeTranscript = Speechly_Slu_V1_SLUTentativeTranscript
 

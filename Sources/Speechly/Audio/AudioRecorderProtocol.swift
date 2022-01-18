@@ -44,7 +44,7 @@ public protocol AudioRecorderProtocol {
 // MARK: - AudioRecorderDelegate definition.
 
 /// Delegate called when audio recorder receives some data or an error, or when it has been stopped.
-public protocol AudioRecorderDelegate: class {
+public protocol AudioRecorderDelegate: AnyObject {
     /// Called when the recorder catches an error.
     ///
     /// - Parameter error: The error which was caught.
