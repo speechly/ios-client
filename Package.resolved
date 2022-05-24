@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/speechly/api.git",
         "state": {
           "branch": null,
-          "revision": "424d09e1f0971f9fa191e86e4b30d6db73ae8094",
-          "version": "0.4.5"
+          "revision": "8a226fc0670586b89cba76ccefa20436dc3e510b",
+          "version": "0.8.0"
         }
       },
       {
