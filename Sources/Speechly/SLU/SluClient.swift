@@ -139,9 +139,12 @@ extension SluClient: SluClientProtocol {
         case let .connected(timer, stream):
             timer.cancel()
             return stream.sendMessage(SluRequestProto.with {
-                $0.event = SluEventProto.with {
-                    $0.event = .start
+                $0.start = SluStartProto.with {
                     $0.appID = appId ?? ""
+                    $0.options = [SluStartOptionProto.with {
+                        $0.key = "timezone"
+                        $0.value = [TimeZone.current.identifier]
+                    }]
                 }
             })
             .map {
@@ -159,9 +162,7 @@ extension SluClient: SluClientProtocol {
         case let .streaming(stream):
             return stream
                 .sendMessage(SluRequestProto.with {
-                    $0.event = SluEventProto.with {
-                        $0.event = .stop
-                    }
+                    $0.stop = SluStopProto()
                 })
                 .map {
                     self.state = .connected(self.makeDisconnectTimer(), stream)
@@ -193,7 +194,9 @@ extension SluClient: SluClientProtocol {
     }
 
     private typealias SluConfigProto = Speechly_Slu_V1_SLUConfig
-    private typealias SluEventProto = Speechly_Slu_V1_SLUEvent
+    private typealias SluStartProto = Speechly_Slu_V1_SLUStart
+    private typealias SluStopProto = Speechly_Slu_V1_SLUStop
+    private typealias SluStartOptionProto = Speechly_Slu_V1_SLUStart.Option
 
     private func makeStream(token: ApiAccessToken, config: SluConfig) -> EventLoopFuture<(DisconnectTimer, SluStream)> {
         os_log("Connecting to SLU API", log: speechly, type: .debug)
