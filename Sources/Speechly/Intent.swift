@@ -16,7 +16,7 @@ public struct Intent: Hashable {
     public static let Empty = Intent(value: "", isFinal: false)
 
     /// The value of the intent, as defined in Speechly application configuration.
-    /// e.g. in the example "*book book a [burger restaurant](restaurant_type)" it would be `book`.
+    /// e.g. in the example `*book book a [burger restaurant](restaurant_type)` it would be `book`.
     public let value: String
 
     /// The status of the intent.

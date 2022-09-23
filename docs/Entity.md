@@ -7,12 +7,12 @@ public struct Entity: Hashable, Identifiable
 ```
 
 An entity is a specific object in the phrase that falls into some kind of category,
-e.g. in a SAL example "\*book book a [burger restaurant](restaurant_type) for [tomorrow](date.md)"
+e.g. in a SAL example `*book book a [burger restaurant](restaurant_type) for [tomorrow](date.md)`
 "burger restaurant" would be an entity of type `restaurant_type`,
 and "tomorrow" would be an entity of type `date`.
 
 An entity has a start and end indices which map to the indices of `SpeechTranscript`s,
-e.g. in the example "\*book book a [burger restaurant](restaurant_type) for [tomorrow](date.md)" it would be:
+e.g. in the example `*book book a [burger restaurant](restaurant_type) for [tomorrow](date.md)` it would be:
 
   - Entity "burger restaurant" - `startIndex = 2, endIndex = 3`
 
