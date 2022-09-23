@@ -45,7 +45,9 @@ let Empty
 ### `value`
 
 The value of the intent, as defined in Speechly application configuration.
-e.g. in the example `*book book a [burger restaurant](restaurant_type)` it would be `book```` swift
+e.g. in the example `*book book a [burger restaurant](restaurant_type)` it would be `book`.
+
+``` swift
 let value: String
 ```
 
