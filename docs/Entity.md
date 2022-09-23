@@ -7,12 +7,12 @@ public struct Entity: Hashable, Identifiable
 ```
 
 An entity is a specific object in the phrase that falls into some kind of category,
-e.g. in a SAL example `*book book a [burger restaurant](restaurant_type) for [tomorrow](date.md)`
+e.g. in a SAL example `*book book a [burger restaurant](restaurant_type) for [tomorrow](date)`
 "burger restaurant" would be an entity of type `restaurant_type`,
 and "tomorrow" would be an entity of type `date`.
 
 An entity has a start and end indices which map to the indices of `SpeechTranscript`s,
-e.g. in the example `*book book a [burger restaurant](restaurant_type) for [tomorrow](date.md)` it would be:
+e.g. in the example `*book book a [burger restaurant](restaurant_type) for [tomorrow](date)` it would be:
 
   - Entity "burger restaurant" - `startIndex = 2, endIndex = 3`
 
@@ -61,7 +61,7 @@ The value of the entity, as detected by the API and defined by SAL.
 let value: String
 ```
 
-Given SAL `*book book a [burger restaurant](restaurant_type.md)` and an audio `book an italian place`,
+Given SAL `*book book a [burger restaurant](restaurant_type)` and an audio `book an italian place`,
 The value will be `italian place`.
 
 ### `type`
@@ -72,7 +72,7 @@ The type (or class) of the entity, as detected by the API and defined by SAL.
 let type: String
 ```
 
-Given SAL `*book book a [burger restaurant](restaurant_type.md)` and an audio `book an italian place`,
+Given SAL `*book book a [burger restaurant](restaurant_type)` and an audio `book an italian place`,
 The type will be `restaurant_type`.
 
 ### `startIndex`
