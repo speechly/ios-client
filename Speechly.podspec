@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'Speechly'
-  s.version          = '0.1.0'
+  s.version          = '0.3.2'
   s.summary          = 'Swift iOS client for Speechly SLU API.'
 
   s.homepage         = 'https://github.com/speechly/ios-client'
