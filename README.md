@@ -207,7 +207,7 @@ extension SpeechlyManager: SpeechlyDelegate {
 }
 ```
 
-For a `SwiftUI` example, check out the [ios-repo-filtering](https://github.com/speechly/ios-repo-filtering) demo app.
+For a `SwiftUI` example, check out the [Speechly iOS Client Example](https://github.com/speechly/speechly/tree/main/examples/ios-client-example) app.
 
 ## Documentation
 
